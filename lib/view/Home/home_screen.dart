@@ -206,9 +206,9 @@ class _HomeScreenState extends State<HomeScreen>
                                   GestureDetector(
                                     child: Card(
                                       child: snapshot.data[i]['noteImageUrl'] ==
-                                              'assets/note_book.jpeg'
+                                              notebookLogo
                                           ? Image.asset(
-                                              'assets/note_book.jpeg',
+                                              notebookLogo,
                                               height: MediaQuery.of(context)
                                                       .size
                                                       .height /
