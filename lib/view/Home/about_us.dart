@@ -59,7 +59,7 @@ class About extends StatelessWidget {
           ),
           const Text('Notebook Version 1.0', style: TextStyle(fontSize: 20)),
           const Text(
-            "Developed By Yahya Atta\nFourth Year\nGithub:yahya_atta",
+            "Developed By Yahya Atta\nFourth Year\nGithub:YahyaAtta",
             style: TextStyle(fontSize: 20),
             textAlign: TextAlign.center,
           ),
