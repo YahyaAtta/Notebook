@@ -89,6 +89,20 @@ class Notesbook extends StatelessWidget {
             Expanded(
                 flex: 5,
                 child: ListTile(
+                  trailing: Container(
+                    height: 100,
+                    width: 100,
+                    child: Row(
+                      spacing: 5,
+                      children: [
+                        IconButton(
+                            onPressed: () {},
+                            icon: Icon(Icons.play_arrow_rounded)),
+                        IconButton(
+                            onPressed: () {}, icon: Icon(Icons.stop_rounded))
+                      ],
+                    ),
+                  ),
                   title: notesbook.noteTitle == ""
                       ? Text(notesbook.noteContent,
                           style: const TextStyle(

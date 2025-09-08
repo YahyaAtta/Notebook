@@ -13,10 +13,10 @@ class AppRoute {
   Future startRecord() async {
     n = Random().nextInt(100000000);
     if (await record.hasPermission()) {
-      await record.start(const RecordConfig(),
-          path: await getApplicationCacheDirectory().then(
-            (value) => "${value.path}/${n}note_record.m4a",
-          ));
+      String path =
+          '${(await getApplicationDocumentsDirectory()).path}/audio_$n.m4a';
+      await record.start(const RecordConfig(), path: path);
+      return path;
     }
     Future stopRecord() async {
       await record.stop();
