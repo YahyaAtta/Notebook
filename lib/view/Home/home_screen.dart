@@ -27,10 +27,7 @@ class HomeScreen extends StatefulWidget {
 
 class Notesbook extends StatelessWidget {
   final Notes notesbook;
-  const Notesbook({
-    super.key,
-    required this.notesbook,
-  });
+  const Notesbook({super.key, required this.notesbook});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -89,20 +86,12 @@ class Notesbook extends StatelessWidget {
             Expanded(
                 flex: 5,
                 child: ListTile(
-                  trailing: Container(
-                    height: 100,
-                    width: 100,
-                    child: Row(
-                      spacing: 5,
-                      children: [
-                        IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.play_arrow_rounded)),
-                        IconButton(
-                            onPressed: () {}, icon: Icon(Icons.stop_rounded))
-                      ],
-                    ),
-                  ),
+                  trailing: IconButton(
+                      onPressed: () {
+                        AppRoute.goEditNote(
+                            context, UpdateNote(notes: notesbook));
+                      },
+                      icon: Icon(Icons.edit_rounded, size: 30)),
                   title: notesbook.noteTitle == ""
                       ? Text(notesbook.noteContent,
                           style: const TextStyle(
@@ -395,13 +384,18 @@ class _HomeScreenState extends State<HomeScreen>
                                       context: context,
                                       noteId: snapshot.data[i]['noteId'],
                                       noteImageurl: snapshot.data[i]
-                                          ['noteImageUrl']);
+                                          ['noteImageUrl'],
+                                      noteRecord: snapshot.data[i]
+                                          ['noteRecord']);
                                 },
                                 btnCancelOnPress: () {
                                   notes.refresh();
                                 },
                               ).show();
                             },
+                            background: Card(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
                             child: Notesbook(
                                 notesbook: Notes.fromJson(snapshot.data[i])),
                           );

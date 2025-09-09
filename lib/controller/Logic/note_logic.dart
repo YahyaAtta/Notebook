@@ -10,25 +10,36 @@ final record = AudioRecorder();
 int n = 0;
 
 class AppRoute {
-  Future startRecord() async {
+  Future<String?> startRecord() async {
     n = Random().nextInt(100000000);
     if (await record.hasPermission()) {
       String path =
           '${(await getApplicationDocumentsDirectory()).path}/audio_$n.m4a';
       await record.start(const RecordConfig(), path: path);
       return path;
+    } else {
+      return null;
     }
-    Future stopRecord() async {
-      await record.stop();
-    }
+  }
 
-    Future cancelRecord() async {
-      await record.stop();
-    }
+  Future<bool> isRecordingWhile() async {
+    return await record.isRecording();
+  }
 
-    Future disposeRecord() async {
-      await record.dispose();
-    }
+  Future stopRecord() async {
+    await record.stop();
+  }
+
+  Future cancelRecord() async {
+    await record.cancel();
+  }
+
+  Future pauseRecord() async {
+    await record.pause();
+  }
+
+  Future disposeRecord() async {
+    await record.dispose();
   }
 
   static void customShowDialog(

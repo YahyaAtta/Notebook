@@ -1,4 +1,3 @@
-
 class Notes {
   late int noteId;
   late double contentSize;
@@ -14,6 +13,7 @@ class Notes {
   late String createdBy;
   late String fontStyle;
   late String fontWeight;
+  late String? noteRecord;
   Notes(
       {required this.noteId,
       required this.noteTitle,
@@ -28,7 +28,8 @@ class Notes {
       required this.noteDate,
       required this.noteTime,
       required this.fontStyle,
-      required this.fontWeight});
+      required this.fontWeight,
+      this.noteRecord});
   Notes.fromJson(Map<String, Object?> json)
       : noteId = json['noteId'] as int,
         noteTitle = json['noteTitle'] as String,
@@ -41,5 +42,6 @@ class Notes {
         noteTime = json['noteTime'] as String,
         noteDate = json['noteDate'] as String,
         fontStyle = json['fontStyle'] as String,
-        fontWeight = json['fontWeight'] as String;
+        fontWeight = json['fontWeight'] as String,
+        noteRecord = json['noteRecord'] as String?;
 }

@@ -17,18 +17,25 @@ class AddNote extends StatefulWidget {
 
 class _AddNoteState extends State<AddNote> {
   DateTime? selectedDate;
+
   String? noteDate;
   String? noteTime;
+  bool isPaused = false;
+  bool isRecording = false;
+  String? getPathAudio;
+  AppRoute appRoute = AppRoute();
   TextEditingController noteTitle = TextEditingController();
   TextEditingController noteContent = TextEditingController();
   GlobalKey<FormState> formState = GlobalKey<FormState>();
   @override
   void deactivate() {
-    if (Provider.of<NotesModel>(context).imageurl == null) {
+    if (Provider.of<NotesModel>(context).imageurl == null ||
+        getPathAudio == "empty") {
     } else {
       File(Provider.of<NotesModel>(context, listen: false).imageurl!)
           .deleteSync();
       Provider.of<NotesModel>(context).imageurl = null;
+      File(getPathAudio!).deleteSync();
       debugPrint("Deleted File");
     }
     super.deactivate();
@@ -124,6 +131,50 @@ class _AddNoteState extends State<AddNote> {
                   centerTitle: true,
                   title: const Text("Add Note"),
                   actions: [
+                    AnimatedContainer(
+                      alignment: Alignment.center,
+                      duration: Duration(seconds: 2),
+                      height: 50,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: const Color.fromARGB(255, 91, 71, 0),
+                      ),
+                      child: Row(
+                        children: [
+                          IconButton(
+                              onPressed: () async {
+                                if (isRecording == false) {
+                                  isRecording = true;
+                                  setState(() {});
+                                  getPathAudio = await appRoute.startRecord();
+                                  SnackBar snackBar = SnackBar(
+                                      content: Text("Start Recording......"));
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
+                                } else {
+                                  await appRoute.stopRecord();
+                                  setState(() {
+                                    isRecording = false;
+                                    isPaused = false;
+                                  });
+                                  SnackBar snackBar = SnackBar(
+                                      content: Text("Recording is stopped"));
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
+                                }
+                              },
+                              icon: isRecording == true
+                                  ? Icon(
+                                      Icons.pause,
+                                      color: Colors.green,
+                                    )
+                                  : Icon(
+                                      Icons.circle_rounded,
+                                      color: Colors.white,
+                                    )),
+                        ],
+                      ),
+                    ),
                     Visibility(
                       maintainAnimation: true,
                       maintainInteractivity: true,
@@ -134,29 +185,31 @@ class _AddNoteState extends State<AddNote> {
                           ? false
                           : true,
                       child: IconButton(
-                        onPressed: noteTitle.text == "" &&
-                                noteContent.text == ""
-                            ? null
-                            : () async {
-                                if (formState.currentState!.validate()) {
-                                  formState.currentState!.save();
-                                  getCurrentDateAndTime();
-                                  notesModel.addNote(
-                                      context: context,
-                                      noteTitle: noteTitle.text,
-                                      noteContent: noteContent.text,
-                                      noteColor: notesModel.noteColor,
-                                      noteTime: noteTime,
-                                      noteDate: noteDate,
-                                      contentSize: notesModel.getContentSize,
-                                      noteImageurl:
-                                          notesModel.imageurl ?? notebookLogo,
-                                      contentIndex: notesModel.getIndex,
-                                      contentType: notesModel.getContentType,
-                                      fontStyle: notesModel.fontStyleString,
-                                      fontWeight: notesModel.fontWeightString);
-                                }
-                              },
+                        onPressed:
+                            noteTitle.text == "" && noteContent.text == ""
+                                ? null
+                                : () async {
+                                    if (formState.currentState!.validate()) {
+                                      formState.currentState!.save();
+                                      getCurrentDateAndTime();
+                                      notesModel.addNote(
+                                        context: context,
+                                        noteTitle: noteTitle.text,
+                                        noteContent: noteContent.text,
+                                        noteColor: notesModel.noteColor,
+                                        noteTime: noteTime,
+                                        noteDate: noteDate,
+                                        contentSize: notesModel.getContentSize,
+                                        noteImageurl:
+                                            notesModel.imageurl ?? notebookLogo,
+                                        contentIndex: notesModel.getIndex,
+                                        contentType: notesModel.getContentType,
+                                        fontStyle: notesModel.fontStyleString,
+                                        fontWeight: notesModel.fontWeightString,
+                                        noteRecord: getPathAudio,
+                                      );
+                                    }
+                                  },
                         icon: const Icon(Icons.done_rounded, size: 28),
                         tooltip: noteTitle.text == "" && noteContent.text == ""
                             ? ''

@@ -51,7 +51,8 @@ class SqlDB {
   noteDate TEXT NOT NULL  , 
   date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   fontStyle TEXT NOT NULL , 
-  fontWeight TEXT NOT NULL 
+  fontWeight TEXT NOT NULL , 
+  noteRecord TEXT DEFAULT 'empty'
   ) 
 ''');
   }

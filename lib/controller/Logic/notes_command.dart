@@ -149,11 +149,12 @@ class NotesModel extends ChangeNotifier {
       String? noteDate,
       String? noteTime,
       String? fontStyle,
-      String? fontWeight}) async {
+      String? fontWeight,
+      String? noteRecord}) async {
     try {
       imageurl ??= notebookLogo;
       int r = await sqldb.insertData(
-          '''INSERT INTO `notes`(`noteTitle`,`noteContent`,`contentType`,`contentIndex`,`noteImageUrl`,`noteColor`,`contentSize`,`noteDate`,`noteTime`,`fontStyle`,`fontWeight`) VALUES("$noteTitle","$noteContent","$contentType",$contentIndex,"$noteImageurl",${noteColor ?? 4292332503},$contentSize,"$noteDate","$noteTime","$fontStyle","$fontWeight")''');
+          '''INSERT INTO `notes`(`noteTitle`,`noteContent`,`contentType`,`contentIndex`,`noteImageUrl`,`noteColor`,`contentSize`,`noteDate`,`noteTime`,`fontStyle`,`fontWeight`,`noteRecord`) VALUES("$noteTitle","$noteContent","$contentType",$contentIndex,"$noteImageurl",${noteColor ?? 4292332503},$contentSize,"$noteDate","$noteTime","$fontStyle","$fontWeight","${noteRecord ?? "empty"}")''');
       if (r > 0) {
         AppRoute.goBack(context);
         await sqldb.readData('''
@@ -165,11 +166,10 @@ SELECT * FROM notes ORDER BY date DESC''');
         setFontStyle = FontStyle.normal;
         fontWeightString = "normal";
         setFontWeight = FontWeight.normal;
-
         this.noteColor = Colors.green[600]!.toARGB32();
         setContentType = "Personal";
         imageurl = null;
-
+        noteRecord = "empty";
         notifyListeners();
       }
     } on DatabaseException catch (e) {
@@ -265,11 +265,15 @@ UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentT
   Future<void> deleteNote(
       {required BuildContext context,
       int? noteId,
-      String? noteImageurl}) async {
+      String? noteImageurl,
+      String? noteRecord}) async {
     try {
-      if (noteImageurl == null || noteImageurl == notebookLogo) {
+      if (noteImageurl == null ||
+          noteImageurl == notebookLogo ||
+          noteRecord == "empty") {
       } else {
         await File(noteImageurl).delete();
+        await File(noteRecord!).delete();
       }
       int r =
           await sqldb.deleteData("DELETE FROM `notes` WHERE noteId =$noteId");
@@ -315,7 +319,8 @@ UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentT
     }
   }
 
-  Future<void> uploadImage(BuildContext context, {required ImageSource source}) async {
+  Future<void> uploadImage(BuildContext context,
+      {required ImageSource source}) async {
     try {
       XFile? picked = await imagePicker.pickImage(source: source);
       if (picked == null) return;
