@@ -17,16 +17,18 @@ class _SplashScreenState extends State<SplashScreen> {
   void initApp() async {
     SqlDB db = SqlDB();
     await db.initDB();
-    if(isFirstTime == null){
-      await audioPlayer.play(AssetSource("start-computeraif-14572.mp3"));
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const Intro()));
+    if (isFirstTime == null) {
+      if (mounted) {
+        await audioPlayer.play(AssetSource("start-computeraif-14572.mp3"));
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const Intro()));
+      }
+    } else {
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const HomeScreen()));
+      }
     }
-    else{
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const HomeScreen()));
-    }
-
   }
 
   @override
