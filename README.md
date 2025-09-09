@@ -1,6 +1,6 @@
 # Notebook
 
-##CrossPlatform Project that Built with Flutter Framework
+## CrossPlatform Project that Built with Flutter Framework
 
 ### inital Version :
 This is First Version of Notebook App
