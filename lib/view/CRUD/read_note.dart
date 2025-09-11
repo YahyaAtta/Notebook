@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +48,23 @@ class _ReadnoteState extends State<Readnote> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            File? pdfFile = await  appLogic.generatePDF(
+                widget.note.noteTitle, widget.note.noteContent);
+            if (pdfFile == null) {
+               if(mounted){
+                  SnackBar snackBar = SnackBar(content: Text("Error!"));
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+               }
+            } else {
+              if(mounted){
+                     SnackBar snackBar = SnackBar(content: Text("PDF Has Been Saved"));
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
+            }
+          },
+          child: Icon(Icons.picture_as_pdf_rounded)),
       appBar: AppBar(
         title: const Text("Read Note"),
         centerTitle: true,

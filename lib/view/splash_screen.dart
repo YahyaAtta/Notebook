@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:note_book/controller/Logic/sqflite_db_provider.dart';
 import 'package:note_book/main.dart';

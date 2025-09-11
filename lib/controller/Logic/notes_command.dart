@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, file_names
+// ignore_for_file: use_build_context_synchronously, file_names, strict_top_level_inference
 
 import 'dart:io';
 import 'package:flutter/services.dart';

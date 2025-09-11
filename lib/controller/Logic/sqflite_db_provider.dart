@@ -1,6 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'dart:io';
+import 'package:note_book/model/notes.dart';
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path_provider/path_provider.dart';
@@ -15,30 +16,38 @@ class SqlDB {
     return _db;
   }
 
+  String? databasePath;
+  Directory? dbpath;
+  String? path;
+  Database? mydb;
+  Future<Database?> sqfliteDBWindows() async {
+    sqfliteFfiInit();
+    DatabaseFactory databaseFactory = databaseFactoryFfi;
+    dbpath = await getApplicationDocumentsDirectory();
+    path = join(dbpath!.path, "Notebook.db");
+    mydb = await databaseFactory.openDatabase(path!,
+        options: OpenDatabaseOptions(version: 3, onCreate: onCreate));
+    return mydb;
+  }
+
+  Future<Database?> sqfliteDBAndroid() async {
+    databasePath = await getDatabasesPath();
+    path = join(databasePath!, "Notesbook.db");
+    mydb = await openDatabase(path!, onCreate: onCreate, version: 3);
+    return mydb;
+  }
+
   Future<Database?> initDB() async {
-    String? databasePath;
-    Directory? dbpath;
-    String? path;
-    Database? mydb;
     if (Platform.isWindows) {
-      sqfliteFfiInit();
-      DatabaseFactory databaseFactory = databaseFactoryFfi;
-      dbpath = await getApplicationDocumentsDirectory();
-      path = join(dbpath.path, "Notebook.db");
-      mydb = await databaseFactory.openDatabase(path,
-          options: OpenDatabaseOptions(version: 3, onCreate: onCreate));
-      return mydb;
+      return sqfliteDBWindows();
     } else {
-      databasePath = await getDatabasesPath();
-      path = join(databasePath, "Notesbook.db");
-      mydb = await openDatabase(path, onCreate: onCreate, version: 3);
-      return mydb;
+      return sqfliteDBAndroid();
     }
   }
 
   Future onCreate(Database? db, int version) async {
-    await db!.execute('''
- CREATE TABLE `notes`(
+    String sql = '''
+CREATE TABLE `notes`(
   noteId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT , 
   noteTitle TEXT NOT NULL ,
   noteContent TEXT NOT NULL ,
@@ -54,7 +63,8 @@ class SqlDB {
   fontWeight TEXT NOT NULL , 
   noteRecord TEXT DEFAULT 'empty'
   ) 
-''');
+''';
+    await db!.execute(sql);
   }
 
   Future<List<Map<String, Object?>>> readData(String sql) async {

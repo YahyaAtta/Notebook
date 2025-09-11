@@ -1,15 +1,44 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:note_book/controller/Animation/app_animate.dart';
+
 import 'package:note_book/view/Home/home_screen.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'dart:math';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 GlobalKey<FormState> formState = GlobalKey<FormState>();
 final record = AudioRecorder();
 int n = 0;
 
 class AppRoute {
+  final pdf = pw.Document();
+  Future<File?> generatePDF(String noteTitle, String noteContent) async {
+    int r = Random().nextInt(100000);
+    pdf.addPage(pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) {
+          return pw.ListView(children: [
+            pw.Column(
+              mainAxisAlignment: pw.MainAxisAlignment.center,
+              children: [
+                pw.Center(
+                  child: pw.Text(noteTitle, style: pw.TextStyle(fontSize: 30)),
+                ),
+                pw.SizedBox(height: 10),
+                pw.Text(noteContent, style: pw.TextStyle(fontSize: 23)),
+              ],
+            ),
+          ]);
+        }));
+    String currentPath = (await getApplicationDocumentsDirectory()).path;
+    final file = File("$currentPath/doc$r.pdf");
+    return await file.writeAsBytes(await pdf.save());
+  }
+
   Future<String?> startRecord() async {
     n = Random().nextInt(100000000);
     if (await record.hasPermission()) {
