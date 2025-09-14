@@ -1,7 +1,10 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:note_book/controller/Animation/app_animate.dart';
+import 'package:note_book/view/Home/device_info.dart';
 
 import 'package:note_book/view/Home/home_screen.dart';
 import 'package:path_provider/path_provider.dart';
@@ -9,12 +12,29 @@ import 'package:record/record.dart';
 import 'dart:math';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'dart:ui' as ui;
 
 GlobalKey<FormState> formState = GlobalKey<FormState>();
 final record = AudioRecorder();
 int n = 0;
 
 class AppRoute {
+  Future getDeviceFromNative() async {}
+  static GlobalKey globalkey = GlobalKey();
+  Future<File> capturePng() async {
+    int random = Random().nextInt(100000);
+    RenderRepaintBoundary boundary =
+        globalkey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+    ui.Image imageObject = await boundary.toImage(pixelRatio: 3.0);
+    ByteData? byteData =
+        await imageObject.toByteData(format: ui.ImageByteFormat.png);
+    Uint8List imageBytes = byteData!.buffer.asUint8List();
+    imageBytes.toList();
+    final getCurrentPath =
+        "${(await getApplicationDocumentsDirectory()).path}/image$random.png";
+    return File(getCurrentPath).writeAsBytes(imageBytes);
+  }
+
   final pdf = pw.Document();
   Future<File?> generatePDF(String noteTitle, String noteContent) async {
     int r = Random().nextInt(100000);
@@ -157,6 +177,10 @@ class AppRoute {
     String regEmail =
         "r'^(([^<>()[]\\.,;:s@\"]+(.[^<>()[]\\.,;:s@\"]+)*)|(\".+\"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))\$";
     return RegExp(regEmail).hasMatch(email);
+  }
+
+  static void goDeviceInfoPage(BuildContext context) {
+    Navigator.of(context).push(CupertinoAnimation(page: NativeDeviceInfo()));
   }
 
   static void goBack(BuildContext context) {

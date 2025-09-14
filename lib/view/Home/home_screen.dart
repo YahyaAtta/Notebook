@@ -32,7 +32,7 @@ class Notesbook extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        AppRoute.goReadNote(context, Readnote(note: notesbook));
+        AppRoute.goReadNote(context, ReadNote(note: notesbook));
       },
       onLongPress: () {
         AppRoute.goEditNote(context, UpdateNote(notes: notesbook));
@@ -239,7 +239,7 @@ class _HomeScreenState extends State<HomeScreen>
                                     onTap: () {
                                       AppRoute.goReadNote(
                                           context,
-                                          Readnote(
+                                          ReadNote(
                                               note: Notes.fromJson(
                                                   snapshot.data[i])));
                                     },

@@ -1,11 +1,9 @@
 // ignore_for_file: depend_on_referenced_packages
 
 import 'dart:io';
-import 'package:note_book/model/notes.dart';
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path_provider/path_provider.dart';
-
 class SqlDB {
   static Database? _db;
   Future<Database?> get db async {

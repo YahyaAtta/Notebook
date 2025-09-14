@@ -133,50 +133,7 @@ class _AddNoteState extends State<AddNote> {
                   centerTitle: true,
                   title: const Text("Add Note"),
                   actions: [
-                    AnimatedContainer(
-                      alignment: Alignment.center,
-                      duration: Duration(seconds: 2),
-                      height: 50,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: const Color.fromARGB(255, 91, 71, 0),
-                      ),
-                      child: Row(
-                        children: [
-                          IconButton(
-                              onPressed: () async {
-                                if (isRecording == false) {
-                                  isRecording = true;
-                                  setState(() {});
-                                  getPathAudio = await appRoute.startRecord();
-                                  SnackBar snackBar = SnackBar(
-                                      content: Text("Start Recording......"));
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(snackBar);
-                                } else {
-                                  await appRoute.stopRecord();
-                                  setState(() {
-                                    isRecording = false;
-                                    isPaused = false;
-                                  });
-                                  SnackBar snackBar = SnackBar(
-                                      content: Text("Recording is stopped"));
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(snackBar);
-                                }
-                              },
-                              icon: isRecording == true
-                                  ? Icon(
-                                      Icons.pause,
-                                      color: Colors.green,
-                                    )
-                                  : Icon(
-                                      Icons.circle_rounded,
-                                      color: Colors.white,
-                                    )),
-                        ],
-                      ),
-                    ),
+
                     Visibility(
                       maintainAnimation: true,
                       maintainInteractivity: true,
@@ -266,6 +223,40 @@ class _AddNoteState extends State<AddNote> {
                                   width: MediaQuery.of(context).size.width,
                                 ),
                     ),
+                    SizedBox(
+                      height: 10,
+                    ) ,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10,right: 10),
+                      child: ElevatedButton.icon(onPressed: () async{
+                        if (isRecording == false) {
+                          isRecording = true;
+                          setState(() {});
+                          getPathAudio = await appRoute.startRecord();
+                          SnackBar snackBar = SnackBar(
+                              content: Text("Start Recording......"));
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(snackBar);
+                        } else {
+                          await appRoute.stopRecord();
+                          setState(() {
+                            isRecording = false;
+                            isPaused = false;
+                          });
+                          SnackBar snackBar = SnackBar(
+                              content: Text("Record Saved"));
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(snackBar);
+                        }
+                      },
+                          style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 30,
+                                  horizontal: 15
+                              )
+                          ),
+                          label: isRecording == true ? Text("") : Text("Record"),icon:isRecording == true ?  Icon(Icons.fiber_manual_record_rounded):Icon(Icons.fiber_manual_record_outlined)),
+                    ) ,
                     const SizedBox(
                       height: 10,
                     ),

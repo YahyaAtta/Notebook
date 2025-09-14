@@ -268,12 +268,15 @@ UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentT
       String? noteImageurl,
       String? noteRecord}) async {
     try {
-      if (noteImageurl == null ||
-          noteImageurl == notebookLogo ||
-          noteRecord == "empty") {
+      if (noteImageurl == notebookLogo) {
+        if(noteRecord!="empty"){
+          await File(noteRecord!).delete();
+        }
       } else {
-        await File(noteImageurl).delete();
-        await File(noteRecord!).delete();
+        if(noteRecord!="empty"){
+          await File(noteRecord!).delete();
+        }
+        await File(noteImageurl!).delete();
       }
       int r =
           await sqldb.deleteData("DELETE FROM `notes` WHERE noteId =$noteId");
