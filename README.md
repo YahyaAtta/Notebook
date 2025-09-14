@@ -1,7 +1,7 @@
 # Notebook
-<<<<<<< HEAD
-crossplatform project that bulit with Flutter Framework
-=======
+
+## CrossPlatform Project that Built with Flutter Framework
+
 ### inital Version :
 This is First Version of Notebook App
 Built By Flutter Framework , State Managment(Provider) , SQFLite , Audio Player
@@ -21,12 +21,3 @@ Show Time & Date Screen
 ### How to Use it:
 Long Tap to Update Note
 In Home Screen tap on Notebook Logo to Show About Screen
-#### Coming Soon:
-Customize Color in Notes
-Modern Note Structure
-Add Beside Audio / Sound Recording
-
-
-
-
->>>>>>> 5b6d36d (First Version of Notebook)
