@@ -199,7 +199,6 @@ class _HomeScreenState extends State<HomeScreen>
                                 SqlDB sqlDB = SqlDB();
                                 int r = await sqlDB
                                     .deleteData("DELETE FROM `notes`");
-
                                 if (isCleared == true && (r > 0 || r == 0)) {
                                   exit(0);
                                 }
