@@ -13,8 +13,8 @@ void main() async {
   sharedPreferences = await SharedPreferences.getInstance();
   isFirstTime = sharedPreferences!.getBool("FirstTime");
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (context) => NotesModel()),
-    ChangeNotifierProvider(create: (context) => TimeModel()),
+    ChangeNotifierProvider(create: (context) => NoteController()),
+    ChangeNotifierProvider(create: (context) => TimeController()),
   ], child: const MyApp()));
 }
 
@@ -29,11 +29,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'robotocondensed-regular',
         colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xffFFCF15), brightness: Brightness.light),
+            seedColor: const Color(0xffd5b001), brightness: Brightness.light),
         brightness: Brightness.light,
         elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xffE7E0EC),
+          backgroundColor: const Color.fromARGB(255, 167, 115, 3),
         )),
         useMaterial3: true,
       ),
@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'robotocondensed-regular',
         brightness: Brightness.dark,
         colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xffFFCF15), brightness: Brightness.dark),
+            seedColor: const Color(0xffd5b001), brightness: Brightness.dark),
         useMaterial3: true,
       ),
       themeMode: ThemeMode.system,

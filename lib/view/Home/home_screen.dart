@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:note_book/controller/Logic/sqflite_db_provider.dart';
 import 'package:note_book/main.dart';
 import 'package:note_book/view/CRUD/add_note.dart';
 import 'package:note_book/view/CRUD/update_note.dart';
@@ -30,83 +31,102 @@ class Notesbook extends StatelessWidget {
   const Notesbook({super.key, required this.notesbook});
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: () {
-        AppRoute.goReadNote(context, ReadNote(note: notesbook));
+        AppLogic.goReadNote(context, ReadNote(note: notesbook));
       },
       onLongPress: () {
-        AppRoute.goEditNote(context, UpdateNote(notes: notesbook));
+        AppLogic.goEditNote(context, UpdateNote(notes: notesbook));
       },
-      child: Card(
-        child: Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: Container(
-                margin: const EdgeInsets.all(10),
-                height: 80,
-                decoration: BoxDecoration(
-                  color: Color(notesbook.noteColor),
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(notesbook.noteColor),
-                      blurRadius: 5,
-                    ),
-                    BoxShadow(
-                      color: Color(notesbook.noteColor),
-                      blurRadius: 5,
-                    ),
-                  ],
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(notesbook.noteColor), Colors.black],
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-                flex: 4,
-                child: Container(
-                    margin: const EdgeInsets.all(5),
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(25),
-                        child: notesbook.noteImageUrl == notebookLogo
-                            ? Image.asset(notebookLogo,
-                                height:
-                                    MediaQuery.of(context).size.height / 4.6,
-                                width: MediaQuery.of(context).size.width / 5.5)
-                            : Image.file(
-                                File(notesbook.noteImageUrl),
-                                height:
-                                    MediaQuery.of(context).size.height / 4.6,
-                                width: MediaQuery.of(context).size.width / 5.5,
-                              )))),
-            Expanded(
-                flex: 5,
-                child: ListTile(
-                  trailing: IconButton(
-                      onPressed: () {
-                        AppRoute.goEditNote(
-                            context, UpdateNote(notes: notesbook));
-                      },
-                      icon: Icon(Icons.edit_rounded, size: 30)),
-                  title: notesbook.noteTitle == ""
-                      ? Text(notesbook.noteContent,
-                          style: const TextStyle(
-                              fontSize: 16.3,
-                              fontWeight: FontWeight.bold,
-                              overflow: TextOverflow.ellipsis))
-                      : Text(notesbook.noteTitle,
-                          style: const TextStyle(
-                              fontSize: 16.3,
-                              fontWeight: FontWeight.bold,
-                              overflow: TextOverflow.ellipsis)),
-                  subtitle:
-                      Text("${notesbook.noteDate}\n${notesbook.noteTime}"),
-                )),
-          ],
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25),
+            gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: isDarkMode
+                    ? [
+                        Color(notesbook.noteColor),
+                        const Color.fromARGB(255, 48, 47, 47),
+                      ]
+                    : [
+                        Color(notesbook.noteColor),
+                        const Color.fromARGB(255, 209, 209, 209),
+                      ])),
+        child: Card(
+          margin: EdgeInsets.all(8),
+          child: Row(
+            children: [
+              // Expanded(
+              //   flex: 1,
+              //   child: Container(
+              //     margin: const EdgeInsets.all(10),
+              //     height: 80,
+              //     decoration: BoxDecoration(
+              //       color: Color(notesbook.noteColor),
+              //       borderRadius: BorderRadius.circular(10),
+              //       boxShadow: [
+              //         BoxShadow(
+              //           color: Color(notesbook.noteColor),
+              //           blurRadius: 5,
+              //         ),
+              //         BoxShadow(
+              //           color: Color(notesbook.noteColor),
+              //           blurRadius: 5,
+              //         ),
+              //       ],
+              //       gradient: LinearGradient(
+              //         begin: Alignment.topLeft,
+              //         end: Alignment.bottomRight,
+              //         colors: [Color(notesbook.noteColor), Colors.black],
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              Expanded(
+                  flex: 4,
+                  child: Container(
+                      margin: const EdgeInsets.all(5),
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(25),
+                          child: notesbook.noteImageUrl == "empty"
+                              ? Opacity(
+                                  opacity: 0.0,
+                                  child: Image.asset(
+                                    notebookLogo,
+                                    height: MediaQuery.of(context).size.height /
+                                        4.6,
+                                    width:
+                                        MediaQuery.of(context).size.width / 5.5,
+                                  ),
+                                )
+                              : Image.file(
+                                  File(notesbook.noteImageUrl),
+                                  height:
+                                      MediaQuery.of(context).size.height / 4.6,
+                                  width:
+                                      MediaQuery.of(context).size.width / 5.5,
+                                )))),
+              Expanded(
+                  flex: 5,
+                  child: ListTile(
+                    title: notesbook.noteTitle == ""
+                        ? Text(notesbook.noteContent,
+                            style: const TextStyle(
+                                fontSize: 16.3,
+                                fontWeight: FontWeight.bold,
+                                overflow: TextOverflow.ellipsis))
+                        : Text(notesbook.noteTitle,
+                            style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                overflow: TextOverflow.ellipsis)),
+                    subtitle:
+                        Text("${notesbook.noteDate}\n${notesbook.noteTime}"),
+                  )),
+            ],
+          ),
         ),
       ),
     );
@@ -162,12 +182,45 @@ class _HomeScreenState extends State<HomeScreen>
               },
               tooltip: 'Current Time',
               icon: const Icon(Icons.access_time_filled)),
+          IconButton(
+              onPressed: () async {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text("Alert"),
+                        content: Text("Do You Want to Reset The App?"),
+                        icon: Icon(Icons.warning_rounded),
+                        actions: [
+                          TextButton(
+                              onPressed: () async {
+                                bool isCleared =
+                                    await sharedPreferences!.clear();
+                                SqlDB sqlDB = SqlDB();
+                                int r = await sqlDB
+                                    .deleteData("DELETE FROM `notes`");
+
+                                if (isCleared == true && (r > 0 || r == 0)) {
+                                  exit(0);
+                                }
+                              },
+                              child: Text("Yes")),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text("No"))
+                        ],
+                      );
+                    });
+              },
+              icon: Icon(Icons.restore))
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
           onPressed: () {
-            AppRoute.goAddNote(context, const AddNote());
+            AppLogic.goAddNote(context, const AddNote());
           },
           child: const Icon(Icons.add_rounded)),
       body: ListView(
@@ -178,7 +231,7 @@ class _HomeScreenState extends State<HomeScreen>
             child: Text("Featured",
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
           ),
-          Consumer<NotesModel>(
+          Consumer<NoteController>(
             builder: (context, notes, child) {
               return FutureBuilder(
                 future: notes.getNotesFromDBStudy(),
@@ -209,19 +262,8 @@ class _HomeScreenState extends State<HomeScreen>
                                   GestureDetector(
                                     child: Card(
                                       child: snapshot.data[i]['noteImageUrl'] ==
-                                              notebookLogo
-                                          ? Image.asset(
-                                              notebookLogo,
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height /
-                                                  3.21,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  1,
-                                              fit: BoxFit.cover,
-                                            )
+                                              "empty"
+                                          ? null
                                           : Image.file(
                                               File(snapshot.data[i]
                                                   ['noteImageUrl']),
@@ -237,7 +279,7 @@ class _HomeScreenState extends State<HomeScreen>
                                             ),
                                     ),
                                     onTap: () {
-                                      AppRoute.goReadNote(
+                                      AppLogic.goReadNote(
                                           context,
                                           ReadNote(
                                               note: Notes.fromJson(
@@ -319,7 +361,7 @@ class _HomeScreenState extends State<HomeScreen>
               );
             },
           ),
-          Consumer<NotesModel>(
+          Consumer<NoteController>(
             builder: (context, notes, child) {
               return FutureBuilder(
                 future: notes.getNotesFromDB(),
@@ -352,7 +394,7 @@ class _HomeScreenState extends State<HomeScreen>
                         padding: const EdgeInsets.all(10),
                         separatorBuilder: (context, i) {
                           return const SizedBox(
-                            height: 10,
+                            height: 20,
                           );
                         },
                         itemCount: snapshot.data!.length,

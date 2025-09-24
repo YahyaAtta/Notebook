@@ -1,6 +1,12 @@
 # Project-level configuration.
 cmake_minimum_required(VERSION 3.14)
+
 project(note_book LANGUAGES CXX)
+
+# JNI include path configuration
+set(JAVA_INCLUDE_PATH "$ENV{JAVA_HOME}/include")
+set(JAVA_INCLUDE_PATH2 "$ENV{JAVA_HOME}/include/win32")
+include_directories(${JAVA_INCLUDE_PATH} ${JAVA_INCLUDE_PATH2})
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.

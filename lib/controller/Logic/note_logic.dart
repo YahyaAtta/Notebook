@@ -1,78 +1,186 @@
 import 'dart:io';
-
-import 'package:flutter/foundation.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:jni/jni.dart';
+import 'package:note_book/hardware_utils_bindings.dart';
+import 'package:path/path.dart';
+// import 'package:jni/jni.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:note_book/controller/Animation/app_animate.dart';
 import 'package:note_book/view/Home/device_info.dart';
-
 import 'package:note_book/view/Home/home_screen.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'dart:math';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'dart:ui' as ui;
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:pdf/pdf.dart';
+import 'package:external_path/external_path.dart';
 
+// import 'package:jni/jni.dart' ;
 GlobalKey<FormState> formState = GlobalKey<FormState>();
 final record = AudioRecorder();
 int n = 0;
 
-class AppRoute {
-  Future getDeviceFromNative() async {}
-  static GlobalKey globalkey = GlobalKey();
-  Future<File> capturePng() async {
-    int random = Random().nextInt(100000);
-    RenderRepaintBoundary boundary =
-        globalkey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-    ui.Image imageObject = await boundary.toImage(pixelRatio: 3.0);
-    ByteData? byteData =
-        await imageObject.toByteData(format: ui.ImageByteFormat.png);
-    Uint8List imageBytes = byteData!.buffer.asUint8List();
-    imageBytes.toList();
-    final getCurrentPath =
-        "${(await getApplicationDocumentsDirectory()).path}/image$random.png";
-    return File(getCurrentPath).writeAsBytes(imageBytes);
+class AppLogic {
+  void showToastFromNative(String message, int duration) async {
+    if (Platform.isAndroid) {
+      JString nativeMessage = message.toJString();
+      final activity = JObject.fromReference(Jni.getCurrentActivity());
+      KotlinHardwareUtils().customShowToast(activity, nativeMessage, duration);
+    }
   }
 
-  final pdf = pw.Document();
-  Future<File?> generatePDF(String noteTitle, String noteContent) async {
-    int r = Random().nextInt(100000);
-    pdf.addPage(pw.Page(
-        pageFormat: PdfPageFormat.a4,
-        build: (pw.Context context) {
-          return pw.ListView(children: [
-            pw.Column(
-              mainAxisAlignment: pw.MainAxisAlignment.center,
-              children: [
-                pw.Center(
-                  child: pw.Text(noteTitle, style: pw.TextStyle(fontSize: 30)),
+  Map<String, String> getDeviceFromNative() {
+    if (Platform.isAndroid) {
+      final dartMap = <String, String>{};
+      final jMap = KotlinHardwareUtils().getHardwareKotlinUtils();
+      final JSet<JString> keys = jMap.keys;
+      for (JString jkey in keys) {
+        final String key = jkey.toDartString();
+        final JString? jVal = jMap[jkey];
+        dynamic value;
+        if (jVal == null) {
+          value = null;
+        } else {
+          value = jVal.toDartString();
+        }
+
+        dartMap[key] = value;
+      }
+      return dartMap;
+    }
+    return {};
+  }
+
+  Future<bool> saveAudio(String noteRecord) async {
+    bool isExists = false;
+    if (noteRecord == "empty") {
+      isExists = false;
+      return isExists;
+    } else {
+      isExists = true;
+      if (Platform.isAndroid) {
+        await FileSaver.instance.saveAs(
+            name: basenameWithoutExtension(noteRecord),
+            fileExtension: 'aac',
+            mimeType: MimeType.aac,
+            filePath: "${await getPath()}/${basename(noteRecord)}",
+            bytes: File(noteRecord).readAsBytesSync());
+      } else {
+        await FileSaver.instance.saveAs(
+            name: basenameWithoutExtension(noteRecord),
+            fileExtension: 'aac',
+            mimeType: MimeType.aac,
+            filePath:
+                "${(await getApplicationDocumentsDirectory()).path}/${basename(noteRecord)}",
+            bytes: File(noteRecord).readAsBytesSync());
+      }
+      return isExists;
+    }
+  }
+
+  Future<void> savePDF(String noteTitle, String noteContent) async {
+    int r = Random().nextInt(1000000);
+    final pdf = pw.Document();
+    try {
+      if ((noteTitle.isArabic() || noteContent.isArabic()) ||
+          (noteTitle.isArabic() && noteContent.isArabic())) {
+        // Load Arabic Font from Asset
+        final fontData =
+            await rootBundle.load('assets/fonts/NotoNaskhArabic-Regular.ttf');
+        if (fontData.lengthInBytes == 0) {
+          throw Exception('Arabic font not found or empty!');
+        }
+        final arabicFont = pw.Font.ttf(fontData);
+
+        pdf.addPage(pw.Page(
+            pageFormat: PdfPageFormat.a4,
+            build: (pw.Context context) {
+              return pw.Center(
+                child: pw.Directionality(
+                  textDirection: pw.TextDirection.rtl,
+                  child: pw.Text(
+                    'عنوان الملاحظة: $noteTitle\nمحتوى الملاحظة: $noteContent',
+                    style: pw.TextStyle(font: arabicFont),
+                  ),
                 ),
-                pw.SizedBox(height: 10),
-                pw.Text(noteContent, style: pw.TextStyle(fontSize: 23)),
-              ],
-            ),
-          ]);
-        }));
-    String currentPath = (await getApplicationDocumentsDirectory()).path;
-    final file = File("$currentPath/doc$r.pdf");
-    return await file.writeAsBytes(await pdf.save());
+              );
+            }));
+      } else {
+        pdf.addPage(pw.Page(
+            pageFormat: PdfPageFormat.a4,
+            build: (pw.Context context) {
+              return pw.Center(
+                child: pw.Column(
+                    mainAxisAlignment: pw.MainAxisAlignment.center,
+                    children: [
+                      pw.Text("Note Title: $noteTitle"),
+                      pw.SizedBox(height: 15),
+                      pw.Text("NoteContent: $noteContent")
+                    ]),
+              );
+            }));
+      }
+      // Save The pdf
+      final pdfBytes = await pdf.save();
+      // Check if pdfBytes is Empty
+      if (pdfBytes.isEmpty) {
+        throw Exception('PDF save failed or returned empty data!');
+      }
+      String savePDF = Platform.isAndroid
+          ? await getPath()
+          : (await getApplicationDocumentsDirectory()).path;
+      File pdfFile = File("$savePDF/doc$r.pdf");
+      await pdfFile.writeAsBytes(pdfBytes);
+      if (Platform.isAndroid) {
+        FileSaver.instance.saveAs(
+            name: basenameWithoutExtension(pdfFile.path),
+            fileExtension: 'pdf',
+            filePath: "${await getPath()}/${basename(pdfFile.path)}",
+            mimeType: MimeType.pdf);
+      } else {
+        FileSaver.instance.saveAs(
+            name: basenameWithoutExtension(pdfFile.path),
+            fileExtension: 'pdf',
+            filePath:
+                "${(await getApplicationDocumentsDirectory()).path}/${basename(pdfFile.path)}",
+            mimeType: MimeType.pdf);
+      }
+    } catch (e) {
+      if (Platform.isAndroid) {
+        AppLogic().showToastFromNative("PDF Generation Error: $e", 1);
+      }
+    }
   }
 
   Future<String?> startRecord() async {
-    n = Random().nextInt(100000000);
-    if (await record.hasPermission()) {
-      String path =
-          '${(await getApplicationDocumentsDirectory()).path}/audio_$n.m4a';
-      await record.start(const RecordConfig(), path: path);
-      return path;
-    } else {
-      return null;
+    try {
+      n = Random().nextInt(100000000);
+      if (await record.hasPermission()) {
+        String path =
+            '${(await getApplicationDocumentsDirectory()).path}/audio_$n.aac';
+        await record.start(const RecordConfig(), path: path);
+        return path;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      if (Platform.isAndroid) {
+        AppLogic().showToastFromNative("Error: $e", 1);
+      }
     }
+
+    return null;
   }
 
   Future<bool> isRecordingWhile() async {
     return await record.isRecording();
+  }
+
+  Future getPath() async {
+    String path = await ExternalPath.getExternalStoragePublicDirectory(
+        ExternalPath.DIRECTORY_DOWNLOAD);
+    return path;
   }
 
   Future stopRecord() async {
@@ -106,7 +214,7 @@ class AppRoute {
             actions: [
               TextButton(
                 onPressed: () {
-                  AppRoute.goBack(context);
+                  AppLogic.goBack(context);
                 },
                 child: const Text("OK"),
               ),
@@ -211,5 +319,13 @@ extension EmailValidator on String {
     return RegExp(
             r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
         .hasMatch(this);
+  }
+}
+
+extension ArabicExtension on String {
+  bool isArabic() {
+    String arabicPattern = r'[\u0600-\u06FF]';
+    RegExp regExp = RegExp(arabicPattern);
+    return regExp.hasMatch(this);
   }
 }

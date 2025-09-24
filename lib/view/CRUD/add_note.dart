@@ -25,19 +25,22 @@ class _AddNoteState extends State<AddNote> {
   bool isPaused = false;
   bool isRecording = false;
   String? getPathAudio;
-  AppRoute appRoute = AppRoute();
+  AppLogic appRoute = AppLogic();
   TextEditingController noteTitle = TextEditingController();
   TextEditingController noteContent = TextEditingController();
   GlobalKey<FormState> formState = GlobalKey<FormState>();
   @override
   void deactivate() {
-    if (Provider.of<NotesModel>(context).imageurl == null ||
+    if (Provider.of<NoteController>(context).imageurl == null ||
         getPathAudio == "empty") {
     } else {
-      File(Provider.of<NotesModel>(context, listen: false).imageurl!)
+      File(Provider.of<NoteController>(context, listen: false).imageurl!)
           .deleteSync();
-      Provider.of<NotesModel>(context).imageurl = null;
-      File(getPathAudio!).deleteSync();
+      Provider.of<NoteController>(context).imageurl = null;
+      if (getPathAudio == null) {
+      } else {
+        File(getPathAudio!).deleteSync();
+      }
       debugPrint("Deleted File");
     }
     super.deactivate();
@@ -91,7 +94,7 @@ class _AddNoteState extends State<AddNote> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<NotesModel>(
+    return Consumer<NoteController>(
       builder: (context, notesModel, child) {
         return Scaffold(
           body: Form(
@@ -133,7 +136,6 @@ class _AddNoteState extends State<AddNote> {
                   centerTitle: true,
                   title: const Text("Add Note"),
                   actions: [
-
                     Visibility(
                       maintainAnimation: true,
                       maintainInteractivity: true,
@@ -144,31 +146,32 @@ class _AddNoteState extends State<AddNote> {
                           ? false
                           : true,
                       child: IconButton(
-                        onPressed:
-                            noteTitle.text == "" && noteContent.text == ""
-                                ? null
-                                : () async {
-                                    if (formState.currentState!.validate()) {
-                                      formState.currentState!.save();
-                                      getCurrentDateAndTime();
-                                      notesModel.addNote(
-                                        context: context,
-                                        noteTitle: noteTitle.text,
-                                        noteContent: noteContent.text,
-                                        noteColor: notesModel.noteColor,
-                                        noteTime: noteTime,
-                                        noteDate: noteDate,
-                                        contentSize: notesModel.getContentSize,
-                                        noteImageurl:
-                                            notesModel.imageurl ?? notebookLogo,
-                                        contentIndex: notesModel.getIndex,
-                                        contentType: notesModel.getContentType,
-                                        fontStyle: notesModel.fontStyleString,
-                                        fontWeight: notesModel.fontWeightString,
-                                        noteRecord: getPathAudio,
-                                      );
-                                    }
-                                  },
+                        onPressed: noteTitle.text == "" &&
+                                noteContent.text == ""
+                            ? null
+                            : () async {
+                                if (formState.currentState!.validate()) {
+                                  formState.currentState!.save();
+                                  getCurrentDateAndTime();
+                                  notesModel.addNote(
+                                    context: context,
+                                    noteTitle: noteTitle.text,
+                                    noteContent: noteContent.text,
+                                    noteColor: notesModel.noteColor,
+                                    noteTime: noteTime,
+                                    noteDate: noteDate,
+                                    contentSize: notesModel.getContentSize,
+                                    noteImageurl: notesModel.imageurl == null
+                                        ? "empty"
+                                        : notesModel.imageurl!,
+                                    contentIndex: notesModel.getIndex,
+                                    contentType: notesModel.getContentType,
+                                    fontStyle: notesModel.fontStyleString,
+                                    fontWeight: notesModel.fontWeightString,
+                                    noteRecord: getPathAudio,
+                                  );
+                                }
+                              },
                         icon: const Icon(Icons.done_rounded, size: 28),
                         tooltip: noteTitle.text == "" && noteContent.text == ""
                             ? ''
@@ -182,20 +185,78 @@ class _AddNoteState extends State<AddNote> {
                       icon: const Icon(Icons.dashboard_customize, size: 33),
                       tooltip: 'Customize Note',
                     ),
+                    IconButton(
+                      onPressed: () async {
+                        if (isRecording == false) {
+                          isRecording = true;
+                          setState(() {});
+                          getPathAudio = await appRoute.startRecord();
+                          if (Platform.isWindows) {
+                            SnackBar snackBar = SnackBar(
+                                content: Text("Start Recording......"));
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          } else {
+                            AppLogic()
+                                .showToastFromNative("Start Recording....", 1);
+                          }
+                        } else {
+                          await appRoute.stopRecord();
+                          setState(() {
+                            isRecording = false;
+                            isPaused = false;
+                          });
+                          if (Platform.isWindows) {
+                            SnackBar snackBar =
+                                SnackBar(content: Text("Record Saved"));
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
+                          } else {
+                            AppLogic().showToastFromNative("Record Saved!", 1);
+                          }
+                        }
+                      },
+                      icon: isRecording == true
+                          ? Icon(Icons.fiber_manual_record_rounded)
+                          : Icon(Icons.fiber_manual_record_outlined),
+                      tooltip: isRecording == true ? 'Pause' : 'Record',
+                    ),
                   ],
                 ),
                 body: ListView(
                   children: [
                     GestureDetector(
                       onTap: () {
-                        AppRoute.chooseImage(
+                        AppLogic.chooseImage(
                             context: context,
                             galleryContent: 'From Gallery',
                             cameraContent: 'From Camera',
                             title: 'Choose Your Image',
                             onCamera: () {
-                              notesModel.uploadImage(context,
-                                  source: ImageSource.camera);
+                              if (Platform.isWindows) {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        icon: Icon(
+                                          Icons.info_rounded,
+                                          size: 30,
+                                        ),
+                                        title: Text("Info"),
+                                        content: Text("Coming Soon!"),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text("OK")),
+                                        ],
+                                      );
+                                    });
+                              } else {
+                                notesModel.uploadImage(context,
+                                    source: ImageSource.camera);
+                              }
                             },
                             onGallery: () {
                               notesModel.uploadImage(context,
@@ -224,40 +285,6 @@ class _AddNoteState extends State<AddNote> {
                                 ),
                     ),
                     SizedBox(
-                      height: 10,
-                    ) ,
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10,right: 10),
-                      child: ElevatedButton.icon(onPressed: () async{
-                        if (isRecording == false) {
-                          isRecording = true;
-                          setState(() {});
-                          getPathAudio = await appRoute.startRecord();
-                          SnackBar snackBar = SnackBar(
-                              content: Text("Start Recording......"));
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(snackBar);
-                        } else {
-                          await appRoute.stopRecord();
-                          setState(() {
-                            isRecording = false;
-                            isPaused = false;
-                          });
-                          SnackBar snackBar = SnackBar(
-                              content: Text("Record Saved"));
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(snackBar);
-                        }
-                      },
-                          style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 30,
-                                  horizontal: 15
-                              )
-                          ),
-                          label: isRecording == true ? Text("") : Text("Record"),icon:isRecording == true ?  Icon(Icons.fiber_manual_record_rounded):Icon(Icons.fiber_manual_record_outlined)),
-                    ) ,
-                    const SizedBox(
                       height: 10,
                     ),
                     Padding(

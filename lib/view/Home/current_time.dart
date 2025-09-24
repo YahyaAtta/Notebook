@@ -12,7 +12,7 @@ class CurrentTime extends StatefulWidget {
 class _CurrentTimeState extends State<CurrentTime> {
   @override
   void initState() {
-    Provider.of<TimeModel>(context, listen: false).getRealTime();
+    Provider.of<TimeController>(context, listen: false).getRealTime();
     super.initState();
   }
 
@@ -24,7 +24,7 @@ class _CurrentTimeState extends State<CurrentTime> {
         title: const Text("Current Time "),
       ),
       body: Center(
-        child: Consumer<TimeModel>(
+        child: Consumer<TimeController>(
           builder: (context, time, child) {
             return RealTime(
                 hour: time.getHour,

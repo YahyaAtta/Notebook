@@ -11,7 +11,7 @@ import 'package:note_book/controller/Logic/note_logic.dart';
 import 'package:note_book/controller/Logic/sqflite_db_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-class NotesModel extends ChangeNotifier {
+class NoteController extends ChangeNotifier {
   SqlDB sqldb = SqlDB();
   String fontStyleString = "normal";
   FontStyle fontStyle = FontStyle.normal;
@@ -46,7 +46,7 @@ class NotesModel extends ChangeNotifier {
 
   Future<void> initalizeApp(BuildContext context) async {
     await sqldb.initDB().then((value) {
-      AppRoute.goHome(context);
+      AppLogic.goHome(context);
     });
   }
 
@@ -152,11 +152,10 @@ class NotesModel extends ChangeNotifier {
       String? fontWeight,
       String? noteRecord}) async {
     try {
-      imageurl ??= notebookLogo;
       int r = await sqldb.insertData(
           '''INSERT INTO `notes`(`noteTitle`,`noteContent`,`contentType`,`contentIndex`,`noteImageUrl`,`noteColor`,`contentSize`,`noteDate`,`noteTime`,`fontStyle`,`fontWeight`,`noteRecord`) VALUES("$noteTitle","$noteContent","$contentType",$contentIndex,"$noteImageurl",${noteColor ?? 4292332503},$contentSize,"$noteDate","$noteTime","$fontStyle","$fontWeight","${noteRecord ?? "empty"}")''');
       if (r > 0) {
-        AppRoute.goBack(context);
+        AppLogic.goBack(context);
         await sqldb.readData('''
 SELECT * FROM notes ORDER BY date DESC''');
         newImage = null;
@@ -170,6 +169,7 @@ SELECT * FROM notes ORDER BY date DESC''');
         setContentType = "Personal";
         imageurl = null;
         noteRecord = "empty";
+        AppLogic().showToastFromNative("The Note Added Successfully", 1);
         notifyListeners();
       }
     } on DatabaseException catch (e) {
@@ -183,7 +183,7 @@ SELECT * FROM notes ORDER BY date DESC''');
               actions: [
                 TextButton(
                     onPressed: () {
-                      AppRoute.goBack(context);
+                      AppLogic.goBack(context);
                     },
                     child: const Text("OK")),
               ],
@@ -235,7 +235,9 @@ UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentT
         setContentType = "Personal";
         this.noteColor = Colors.green[600]!.toARGB32();
         fontStyleString = "normal";
-        AppRoute.goBack(context);
+
+        AppLogic.goBack(context);
+        AppLogic().showToastFromNative("The Note Updated Successfully", 1);
       }
       notifyListeners();
     } on DatabaseException catch (e) {
@@ -249,7 +251,7 @@ UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentT
               actions: [
                 TextButton(
                     onPressed: () {
-                      AppRoute.goBack(context);
+                      AppLogic.goBack(context);
                     },
                     child: const Text("OK")),
               ],
@@ -269,18 +271,22 @@ UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentT
       String? noteRecord}) async {
     try {
       if (noteImageurl == notebookLogo) {
-        if(noteRecord!="empty"){
+        if (noteRecord != "empty") {
           await File(noteRecord!).delete();
         }
       } else {
-        if(noteRecord!="empty"){
+        if (noteRecord != "empty") {
           await File(noteRecord!).delete();
         }
-        await File(noteImageurl!).delete();
+        if (noteImageurl != "empty") {
+          await File(noteImageurl!).delete();
+        }
       }
       int r =
           await sqldb.deleteData("DELETE FROM `notes` WHERE noteId =$noteId");
       if (r > 0) {
+        AppLogic().showToastFromNative("The Note Deleted Successfully", 1);
+
         _notesDb =
             await sqldb.readData("SELECT * FROM notes ORDER BY date DESC");
       }
@@ -296,7 +302,7 @@ UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentT
               actions: [
                 TextButton(
                     onPressed: () {
-                      AppRoute.goBack(context);
+                      AppLogic.goBack(context);
                     },
                     child: const Text("OK")),
               ],
@@ -313,7 +319,7 @@ UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentT
               actions: [
                 TextButton(
                     onPressed: () {
-                      AppRoute.goBack(context);
+                      AppLogic.goBack(context);
                     },
                     child: const Text("OK")),
               ],
@@ -339,8 +345,10 @@ UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentT
         await image!.delete();
       }
       imageurl = newImage!.path;
+      AppLogic().showToastFromNative("Image Uploaded!", 1);
+
       notifyListeners();
-      AppRoute.goBack(context);
+      AppLogic.goBack(context);
     } on PlatformException catch (e) {
       showDialog(
           context: context,
@@ -353,7 +361,7 @@ UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentT
               actions: [
                 TextButton(
                     onPressed: () {
-                      AppRoute.goBack(context);
+                      AppLogic.goBack(context);
                     },
                     child: const Text("OK")),
               ],
@@ -370,7 +378,7 @@ UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentT
       XFile? picked = await imagePicker.pickImage(source: source);
       if (picked == null) return;
       if (noteImageUrl != null) {
-        if (noteImageUrl == notebookLogo) {
+        if (noteImageUrl == notebookLogo || noteImageUrl == "empty") {
         } else {
           await File(noteImageUrl).delete();
         }
@@ -385,8 +393,10 @@ UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentT
         await File(picked.path).delete();
       }
       editImageurl = newImage!.path;
+      AppLogic().showToastFromNative("Image Uploded!", 1);
+
       notifyListeners();
-      AppRoute.goBack(context);
+      AppLogic.goBack(context);
     } on PlatformException catch (e) {
       showDialog(
           context: context,
@@ -399,7 +409,7 @@ UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentT
               actions: [
                 TextButton(
                     onPressed: () {
-                      AppRoute.goBack(context);
+                      AppLogic.goBack(context);
                     },
                     child: const Text("OK")),
               ],

@@ -1,5 +1,5 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
-import 'package:flutter/material.dart' ;
+import 'package:flutter/material.dart';
 import 'package:note_book/view/Home/home_screen.dart';
 import 'package:note_book/controller/Logic/notes_command.dart';
 import 'package:provider/provider.dart';
@@ -10,14 +10,12 @@ class SearchNotes extends SearchDelegate {
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
-
       IconButton(
         icon: const Icon(Icons.close_rounded),
         onPressed: () {
           query = "";
         },
       ),
-
     ];
   }
 
@@ -39,7 +37,7 @@ class SearchNotes extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     if (query == "") {
-      return Consumer<NotesModel>(
+      return Consumer<NoteController>(
         builder: (context, notes, child) {
           return FutureBuilder(
             future: notes.getNotesFromDB(),
@@ -55,15 +53,19 @@ class SearchNotes extends SearchDelegate {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.note_alt_rounded, size: 100,),
-                        Text("No Notes",
-                          style: TextStyle(fontSize: 22, fontWeight: FontWeight
-                              .w500),)
+                        Icon(
+                          Icons.note_alt_rounded,
+                          size: 100,
+                        ),
+                        Text(
+                          "No Notes",
+                          style: TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.w500),
+                        )
                       ],
                     ),
                   );
-                }
-                else {
+                } else {
                   return ListView.separated(
                     itemCount: snapshot.data!.length,
                     separatorBuilder: (context, i) {
@@ -72,34 +74,39 @@ class SearchNotes extends SearchDelegate {
                       );
                     },
                     itemBuilder: (context, i) {
-                       return Dismissible(
+                      return Dismissible(
                         key: Key("$i"),
-                        onDismissed: (d) async{
-                         AwesomeDialog(context: context ,
-                              dismissOnTouchOutside: false,
-                              headerAnimationLoop: true,
-                              animType: AnimType.scale,
-                              descTextStyle: const TextStyle(fontSize: 17.0),
-                              dialogType: DialogType.question,
-                              title: "Message" ,
-                              desc: 'Do You Want To Delete Note ?' ,
-                              btnOkText: 'Yes',
-                              btnCancelText: 'No',
-                              showCloseIcon: true,
-                              isDense: true,
-                              dialogBorderRadius: BorderRadius.circular(35),
-                              onDismissCallback:(s){
-                                if(s.name == "topIcon"){
-                                  notes.refresh() ;
-                                }
-                              },
-                              btnOkOnPress: (){
-                                notes.deleteNote(context: context,noteId: snapshot.data[i]['noteId'] ,noteImageurl: snapshot.data[i]['noteImageUrl']);
-                              } ,
-                              btnCancelOnPress: (){
-                                notes.refresh() ;
-                              } ,
-                            ).show();
+                        onDismissed: (d) async {
+                          AwesomeDialog(
+                            context: context,
+                            dismissOnTouchOutside: false,
+                            headerAnimationLoop: true,
+                            animType: AnimType.scale,
+                            descTextStyle: const TextStyle(fontSize: 17.0),
+                            dialogType: DialogType.question,
+                            title: "Message",
+                            desc: 'Do You Want To Delete Note ?',
+                            btnOkText: 'Yes',
+                            btnCancelText: 'No',
+                            showCloseIcon: true,
+                            isDense: true,
+                            dialogBorderRadius: BorderRadius.circular(35),
+                            onDismissCallback: (s) {
+                              if (s.name == "topIcon") {
+                                notes.refresh();
+                              }
+                            },
+                            btnOkOnPress: () {
+                              notes.deleteNote(
+                                  context: context,
+                                  noteId: snapshot.data[i]['noteId'],
+                                  noteImageurl: snapshot.data[i]
+                                      ['noteImageUrl']);
+                            },
+                            btnCancelOnPress: () {
+                              notes.refresh();
+                            },
+                          ).show();
                         },
                         child: Notesbook(
                             notesbook: Notes.fromJson(snapshot.data[i])),
@@ -113,34 +120,41 @@ class SearchNotes extends SearchDelegate {
           );
         },
       );
-    }
-    else {
-      return Consumer<NotesModel>(
+    } else {
+      return Consumer<NoteController>(
         builder: (context, notes, child) {
-          List filter = notes.getNotes.where((element) =>
-              element['noteTitle'].contains(query) || element['noteContent'].contains(query)).toList();
-          return filter.isEmpty ? const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.note_alt_rounded, size: 100,),
-                  Text("No Notes",
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight
-                        .w500),)
-                ],
-              )
-          ): ListView.separated(
-            itemCount: filter.length,
-            separatorBuilder: (context, i) {
-              return const SizedBox(
-                height: 10,
-              );
-            },
-            itemBuilder: (context, i) {
-               return Notesbook(
-                   notesbook: Notes.fromJson(filter[i]));
-            },
-          );
+          List filter = notes.getNotes
+              .where((element) =>
+                  element['noteTitle'].contains(query) ||
+                  element['noteContent'].contains(query))
+              .toList();
+          return filter.isEmpty
+              ? const Center(
+                  child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.note_alt_rounded,
+                      size: 100,
+                    ),
+                    Text(
+                      "No Notes",
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+                    )
+                  ],
+                ))
+              : ListView.separated(
+                  itemCount: filter.length,
+                  separatorBuilder: (context, i) {
+                    return const SizedBox(
+                      height: 10,
+                    );
+                  },
+                  itemBuilder: (context, i) {
+                    return Notesbook(notesbook: Notes.fromJson(filter[i]));
+                  },
+                );
         },
       );
     }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:note_book/controller/Logic/note_logic.dart';
 
 class NativeDeviceInfo extends StatefulWidget {
   const NativeDeviceInfo({super.key});
@@ -13,6 +14,13 @@ class _NativeDeviceInfoState extends State<NativeDeviceInfo> {
   String operatingSystemWindows = Platform.operatingSystem;
   String operatingSystemVersion = Platform.operatingSystemVersion;
   int numberOfProcessor = Platform.numberOfProcessors;
+  Map<String, String>? hardware;
+  @override
+  void initState() {
+    hardware = AppLogic().getDeviceFromNative();
+    setState(() {});
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +60,10 @@ class _NativeDeviceInfoState extends State<NativeDeviceInfo> {
                 title: Column(
                   children: Platform.isAndroid
                       ? [
-                          Text("Manufacturer:Samsung"),
-                          Text("Model No: Samsung"),
-                          Text("Manufacturer: Samsung"),
-                          Text("Android Version:"),
+                          Text("Manufacturer:${hardware!['Manufacturer']}"),
+                          Text("Model No: ${hardware!['Model No']}"),
+                          Text("Board: ${hardware!['Board']}"),
+                          Text("Android Version: ${hardware!['Version']}"),
                         ]
                       : [
                           Text("Operating System: $operatingSystemWindows"),

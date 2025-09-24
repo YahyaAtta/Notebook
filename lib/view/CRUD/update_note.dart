@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:note_book/main.dart';
@@ -24,19 +23,19 @@ class _UpdateNoteState extends State<UpdateNote> {
 
   @override
   void didChangeDependencies() {
-    Provider.of<NotesModel>(context, listen: false).setContentType =
+    Provider.of<NoteController>(context, listen: false).setContentType =
         widget.notes.contentType;
-    Provider.of<NotesModel>(context, listen: false).setIndex =
+    Provider.of<NoteController>(context, listen: false).setIndex =
         widget.notes.contentIndex;
-    Provider.of<NotesModel>(context, listen: false).fs =
+    Provider.of<NoteController>(context, listen: false).fs =
         widget.notes.contentSize;
-    Provider.of<NotesModel>(context, listen: false).noteColor =
+    Provider.of<NoteController>(context, listen: false).noteColor =
         widget.notes.noteColor;
-    Provider.of<NotesModel>(context, listen: false).editImageurl =
+    Provider.of<NoteController>(context, listen: false).editImageurl =
         widget.notes.noteImageUrl;
-    Provider.of<NotesModel>(context, listen: false).fontStyleString =
+    Provider.of<NoteController>(context, listen: false).fontStyleString =
         widget.notes.fontStyle;
-    Provider.of<NotesModel>(context, listen: false).fontWeightString =
+    Provider.of<NoteController>(context, listen: false).fontWeightString =
         widget.notes.fontWeight;
     super.didChangeDependencies();
   }
@@ -49,13 +48,7 @@ class _UpdateNoteState extends State<UpdateNote> {
   GlobalKey<FormState> formState = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Consumer<NotesModel>(builder: (context, notesModel, child) {
-      if (kDebugMode) {
-        print(widget.notes.noteImageUrl);
-      }
-      if (kDebugMode) {
-        print(notesModel.editImageurl);
-      }
+    return Consumer<NoteController>(builder: (context, notesModel, child) {
       return notesModel.editImageurl == null
           ? const Scaffold(
               body: Center(
@@ -119,7 +112,7 @@ class _UpdateNoteState extends State<UpdateNote> {
                       }
                     },
                     icon: const Icon(Icons.done_rounded, size: 28),
-                    tooltip: 'Edit Note',
+                    tooltip: 'Update Note',
                   ),
                   IconButton(
                     onPressed: () {
@@ -137,7 +130,7 @@ class _UpdateNoteState extends State<UpdateNote> {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        AppRoute.chooseImage(
+                        AppLogic.chooseImage(
                             context: context,
                             title: 'Update Image',
                             cameraContent: 'From Camera',
@@ -156,8 +149,8 @@ class _UpdateNoteState extends State<UpdateNote> {
                               );
                             });
                       },
-                      child: notesModel.editImageurl == notebookLogo &&
-                              widget.notes.noteImageUrl == notebookLogo
+                      child: notesModel.editImageurl == "empty" &&
+                              widget.notes.noteImageUrl == "empty"
                           ? Image.asset(
                               notebookLogo,
                               height: MediaQuery.of(context).size.height / 3.3,

@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+version: 1.2.0+1
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -47,6 +47,12 @@ dependencies:
   shared_preferences: ^2.5.3
   record: ^6.1.1
   pdf: ^3.11.3
+  # gallery_saver_plus: ^3.2.9
+  # permission_handler: ^12.0.1
+  jni: ^0.14.2
+  sqflite_common_ffi: any
+  external_path: ^2.2.0
+  file_saver: ^0.3.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -57,8 +63,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
-  sqflite_common_ffi: ^2.3.0+4
+  jnigen: ^0.14.2
   flutter_launcher_icons: ^0.14.4
+
 flutter_icons:
   android: "launcher_icon"
   ios: true
@@ -84,6 +91,7 @@ flutter:
   assets:
     - assets/
     - assets/icon/
+    - assets/fonts/NotoNaskhArabic-Regular.ttf
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
@@ -96,6 +104,9 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
+     - family: Arabic
+       fonts:
+         - asset: assets/fonts/NotoNaskhArabic-Regular.ttf
      - family: robotocondensed-regular
        fonts:
          - asset: assets/fonts/robotocondensed-regular.ttf

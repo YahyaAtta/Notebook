@@ -16,14 +16,14 @@ class Custom extends StatelessWidget {
           IconButton(
               tooltip: 'Edit Done',
               onPressed: () {
-                AppRoute.goBack(context);
+                AppLogic.goBack(context);
               },
               icon: const Icon(Icons.done)),
         ],
       ),
       body: ListView(
         children: [
-          Consumer<NotesModel>(
+          Consumer<NoteController>(
             builder: (context, notes, child) =>
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               const Text("Content Font Size"),
@@ -105,7 +105,7 @@ class Custom extends StatelessWidget {
               ),
               SizedBox(
                 height: 100,
-                child: Consumer<NotesModel>(
+                child: Consumer<NoteController>(
                   builder: (context, notes, child) => ListView(
                     scrollDirection: Axis.horizontal,
                     children: [

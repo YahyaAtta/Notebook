@@ -15,7 +15,7 @@ class About extends StatelessWidget {
           IconButton(
               tooltip: 'Device Info',
               onPressed: () {
-                AppRoute.goDeviceInfoPage(context);
+                AppLogic.goDeviceInfoPage(context);
               },
               icon: Icon(
                 Icons.info_rounded,
@@ -73,7 +73,7 @@ class About extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                const Text('Notebook Version 1.0',
+                const Text('Notebook Version 1.2',
                     style: TextStyle(fontSize: 20)),
                 const Text(
                   "Developed By Yahya Atta\nFourth Year\nComputer Science(CS)\nGithub:YahyaAtta",

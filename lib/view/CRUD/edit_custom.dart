@@ -21,14 +21,14 @@ class _EditCustomState extends State<EditCustom> {
           IconButton(
               tooltip: 'Edit Done',
               onPressed: () {
-                AppRoute.goBack(context);
+                AppLogic.goBack(context);
               },
               icon: const Icon(Icons.done)),
         ],
       ),
       body: ListView(
         children: [
-          Consumer<NotesModel>(
+          Consumer<NoteController>(
             builder: (context, notes, child) =>
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               const Text("Edit Content Font Size"),
@@ -72,7 +72,6 @@ class _EditCustomState extends State<EditCustom> {
               const SizedBox(
                 height: 10,
               ),
-    
               const Text("Edit Font Weight"),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -115,7 +114,7 @@ class _EditCustomState extends State<EditCustom> {
               ),
               SizedBox(
                 height: 100,
-                child: Consumer<NotesModel>(
+                child: Consumer<NoteController>(
                   builder: (context, notes, child) => ListView(
                     scrollDirection: Axis.horizontal,
                     children: [

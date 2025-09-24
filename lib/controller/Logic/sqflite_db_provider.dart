@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path_provider/path_provider.dart';
+
 class SqlDB {
   static Database? _db;
   Future<Database?> get db async {
@@ -51,7 +52,7 @@ CREATE TABLE `notes`(
   noteContent TEXT NOT NULL ,
   contentType TEXT NOT NULL , 
   contentIndex int(2) NOT NULL , 
-  noteImageUrl TEXT  DEFAULT 'assets/note_book.jpeg' ,
+  noteImageUrl TEXT DEFAULT 'empty',
   noteColor INTEGER DEFAULT 4292332503 , 
   contentSize double NOT NULL , 
   noteTime TEXT NOT NULL , 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:clock/clock.dart';
 import 'dart:async';
 
-class TimeModel extends ChangeNotifier {
+class TimeController extends ChangeNotifier {
   Object? hour;
   Object? minute;
   Object? second;

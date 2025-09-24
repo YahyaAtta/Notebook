@@ -21,14 +21,14 @@ class _UpdateCustomState extends State<UpdateCustom> {
           IconButton(
               tooltip: 'Update Done',
               onPressed: () {
-                AppRoute.goBack(context);
+                AppLogic.goBack(context);
               },
               icon: const Icon(Icons.done)),
         ],
       ),
       body: ListView(
         children: [
-          Consumer<NotesModel>(
+          Consumer<NoteController>(
             builder: (context, notes, child) =>
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               const Text("Update Content Font Size"),
@@ -114,7 +114,7 @@ class _UpdateCustomState extends State<UpdateCustom> {
               ),
               SizedBox(
                 height: 100,
-                child: Consumer<NotesModel>(
+                child: Consumer<NoteController>(
                   builder: (context, notes, child) => ListView(
                     scrollDirection: Axis.horizontal,
                     children: [
