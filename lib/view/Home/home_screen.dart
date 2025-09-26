@@ -197,6 +197,18 @@ class _HomeScreenState extends State<HomeScreen>
                                 bool isCleared =
                                     await sharedPreferences!.clear();
                                 SqlDB sqlDB = SqlDB();
+                                List? getNotes = await sqlDB
+                                    .readData("SELECT * FROM `notes`");
+                                for (int i = 0; i < getNotes.length; i++) {
+                                  if (getNotes[i]['noteRecord'] != "empty") {
+                                    await File(getNotes[i]['noteRecord'])
+                                        .delete();
+                                  }
+                                  if (getNotes[i]['noteImageUrl'] != "empty") {
+                                    await File(getNotes[i]['noteImageUrl'])
+                                        .delete();
+                                  }
+                                }
                                 int r = await sqlDB
                                     .deleteData("DELETE FROM `notes`");
                                 if (isCleared == true && (r > 0 || r == 0)) {
@@ -260,9 +272,27 @@ class _HomeScreenState extends State<HomeScreen>
                                 children: [
                                   GestureDetector(
                                     child: Card(
+                                      color: snapshot.data[i]['noteImageUrl'] ==
+                                              "empty"
+                                          ? Color(snapshot.data[i]['noteColor'])
+                                          : null,
                                       child: snapshot.data[i]['noteImageUrl'] ==
                                               "empty"
-                                          ? null
+                                          ? Opacity(
+                                              opacity: 0.0,
+                                              child: Image.asset(
+                                                notebookLogo,
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height /
+                                                    3.21,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    1,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            )
                                           : Image.file(
                                               File(snapshot.data[i]
                                                   ['noteImageUrl']),

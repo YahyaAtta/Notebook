@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:note_book/controller/Logic/note_logic.dart';
+import 'package:note_book/main.dart';
 import 'package:note_book/model/notes.dart';
 
 // ignore: must_be_immutable
@@ -70,9 +71,9 @@ class _ReadNoteState extends State<ReadNote> {
                           "Not Supported Arabic Typing Yet", 1);
                     }
                   } else {
+                    await appLogic.savePDF(
+                        widget.note.noteTitle, widget.note.noteContent);
                     if (Platform.isWindows) {
-                      await appLogic.savePDF(
-                          widget.note.noteTitle, widget.note.noteContent);
                       SnackBar snackBar =
                           SnackBar(content: Text("PDF Has Been Saved"));
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -147,7 +148,13 @@ class _ReadNoteState extends State<ReadNote> {
                     borderRadius: BorderRadius.circular(25),
                     child: Center(
                         child: widget.note.noteImageUrl == "empty"
-                            ? null
+                            ? Opacity(
+                                opacity: 0.0,
+                                child: Image.asset(notebookLogo,
+                                    height:
+                                        MediaQuery.of(context).size.height / 2,
+                                    width: MediaQuery.of(context).size.width),
+                              )
                             : Image.file(
                                 File(widget.note.noteImageUrl),
                                 height: MediaQuery.of(context).size.height / 2,
