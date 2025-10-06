@@ -1,0 +1,131 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:note_book/controller/note_controller.dart';
+import 'package:note_book/model/data_static/assets_model.dart';
+import 'package:path/path.dart' show basename;
+import 'package:path_provider/path_provider.dart';
+
+import '../model/notes.dart';
+
+class UpdateNoteController extends GetxController {
+  bool ispicked = false;
+  Note? note;
+  File? image;
+  File? newImage;
+  String? editImageUrl;
+  String? userPicked;
+  String? editNoteContent;
+  NoteController controller = Get.find<NoteController>();
+  String? editNoteTitle;
+  ImagePicker imagePicker = ImagePicker();
+  Future updateNoteToDatabase(
+      {String? noteTitle,
+      String? noteContent,
+      String? contentType,
+      int? contentIndex,
+      String? noteImageurl,
+      int? noteColor,
+      int? noteId,
+      double? contentSize,
+      String? fontStyle,
+      String? fontWeight}) async {
+    ispicked = true;
+    controller.updateNote(
+        noteTitle: noteTitle,
+        noteContent: noteContent,
+        contentIndex: contentIndex,
+        contentSize: contentSize,
+        contentType: contentType,
+        fontStyle: fontStyle,
+        fontWeight: fontWeight,
+        noteColor: noteColor,
+        noteId: noteId,
+        noteImageurl: noteImageurl);
+  }
+
+  void getRefresh() {
+    update();
+  }
+
+  Future fetchData() async {
+    note = Get.arguments;
+    update();
+    if (note == null) {
+    } else {
+      controller.setContentType(note!.contentType);
+      controller.setIndex(note!.contentIndex);
+      controller.fs = note!.contentSize;
+      controller.noteColor = note!.noteColor;
+      editImageUrl = note!.noteImageUrl;
+      controller.fontStyleString = note!.fontStyle;
+      controller.fontWeightString = note!.fontWeight;
+      update();
+    }
+  }
+
+  Future<void> editUploadImage(
+      {String? noteImageUrl, required ImageSource source}) async {
+    try {
+      XFile? picked = await imagePicker.pickImage(source: source);
+      if (picked == null) return;
+      if (noteImageUrl != null) {
+        if (noteImageUrl == AssetsImageModel.notebook ||
+            noteImageUrl == "empty") {
+        } else {
+          await File(noteImageUrl).delete();
+        }
+      }
+      image = File(picked.path);
+      Directory duplicateFilePath = await getApplicationDocumentsDirectory();
+      String dirPathCurrent = duplicateFilePath.path;
+      String filename = basename(picked.path);
+      newImage = await image!.copy("$dirPathCurrent/$filename");
+      if (Platform.isWindows) {
+      } else {
+        await File(picked.path).delete();
+      }
+      editImageUrl = newImage!.path;
+      userPicked = newImage!.path;
+      //showToastFromNative("Image Uploded!", 1);
+      update();
+      Get.back();
+    } on PlatformException catch (e) {
+      Get.defaultDialog(
+        title: "Message",
+        content: Text("${e.message}", style: const TextStyle(fontSize: 17)),
+        actions: [
+          TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: const Text("OK")),
+        ],
+      );
+    }
+  }
+
+  Future checkImage() async {
+    if (ispicked == false) {
+      if (userPicked == null) {
+      } else {
+        File(userPicked!).deleteSync();
+      }
+    }
+  }
+
+  @override
+  void onReady() {
+    fetchData();
+    super.onReady();
+  }
+
+  @override
+  void onClose() {
+    checkImage();
+    super.onClose();
+  }
+}

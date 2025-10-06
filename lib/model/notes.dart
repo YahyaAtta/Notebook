@@ -1,4 +1,4 @@
-class Notes {
+class Note {
   late int noteId;
   late double contentSize;
   late String noteDate;
@@ -14,7 +14,7 @@ class Notes {
   late String fontStyle;
   late String fontWeight;
   late String? noteRecord;
-  Notes(
+  Note(
       {required this.noteId,
       required this.noteTitle,
       required this.noteContent,
@@ -30,7 +30,7 @@ class Notes {
       required this.fontStyle,
       required this.fontWeight,
       this.noteRecord});
-  Notes.fromJson(Map<String, Object?> json)
+  Note.fromJson(Map<String, Object?> json)
       : noteId = json['noteId'] as int,
         noteTitle = json['noteTitle'] as String,
         noteContent = json['noteContent'] as String,

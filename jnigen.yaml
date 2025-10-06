@@ -3,7 +3,7 @@ android_sdk_config:
 
 output:
   dart:
-    path: lib/hardware_utils_bindings.dart
+    path: lib/controller/bindings/hardware_utils_bindings.dart
     structure: single_file
 
 source_path:

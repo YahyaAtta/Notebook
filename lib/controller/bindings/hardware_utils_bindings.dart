@@ -145,6 +145,40 @@ class KotlinHardwareUtils extends jni$_.JObject {
             i)
         .check();
   }
+
+  static final _id_openLink = _class.instanceMethodId(
+    r'openLink',
+    r'(Landroid/app/Activity;Ljava/lang/String;)V',
+  );
+
+  static final _openLink = jni$_.ProtectedJniExtensions.lookup<
+          jni$_.NativeFunction<
+              jni$_.JThrowablePtr Function(
+                  jni$_.Pointer<jni$_.Void>,
+                  jni$_.JMethodIDPtr,
+                  jni$_.VarArgs<
+                      (
+                        jni$_.Pointer<jni$_.Void>,
+                        jni$_.Pointer<jni$_.Void>
+                      )>)>>('globalEnv_CallVoidMethod')
+      .asFunction<
+          jni$_.JThrowablePtr Function(
+              jni$_.Pointer<jni$_.Void>,
+              jni$_.JMethodIDPtr,
+              jni$_.Pointer<jni$_.Void>,
+              jni$_.Pointer<jni$_.Void>)>();
+
+  /// from: `public final void openLink(android.app.Activity activity, java.lang.String string)`
+  void openLink(
+    jni$_.JObject activity,
+    jni$_.JString string,
+  ) {
+    final _$activity = activity.reference;
+    final _$string = string.reference;
+    _openLink(reference.pointer, _id_openLink as jni$_.JMethodIDPtr,
+            _$activity.pointer, _$string.pointer)
+        .check();
+  }
 }
 
 final class $KotlinHardwareUtils$NullableType
