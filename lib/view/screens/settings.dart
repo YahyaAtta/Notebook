@@ -36,7 +36,14 @@ class SettingsScreen extends StatelessWidget {
                                       .colorScheme
                                       .inversePrimary),
                               onPressed: () {
-                                settingsController.resetApp();
+                                Get.defaultDialog(
+                                    title: "message".tr,
+                                    textConfirm: 'ok'.tr,
+                                    middleText: 'middletext'.tr,
+                                    onConfirm: () {
+                                      settingsController.resetApp();
+                                    },
+                                    textCancel: 'cancel'.tr);
                               },
                               child: Text("reset".tr)),
                         ),

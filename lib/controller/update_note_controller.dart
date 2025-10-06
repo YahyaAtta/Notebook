@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:note_book/controller/note_controller.dart';
-import 'package:note_book/model/data_static/assets_model.dart';
 import 'package:path/path.dart' show basename;
 import 'package:path_provider/path_provider.dart';
 
@@ -34,6 +33,9 @@ class UpdateNoteController extends GetxController {
       String? fontStyle,
       String? fontWeight}) async {
     ispicked = true;
+    if (note!.noteImageUrl != "empty") {
+      await File(note!.noteImageUrl).delete();
+    }
     controller.updateNote(
         noteTitle: noteTitle,
         noteContent: noteContent,
@@ -72,16 +74,10 @@ class UpdateNoteController extends GetxController {
     try {
       XFile? picked = await imagePicker.pickImage(source: source);
       if (picked == null) return;
-      if (noteImageUrl != null) {
-        if (noteImageUrl == AssetsImageModel.notebook ||
-            noteImageUrl == "empty") {
-        } else {
-          await File(noteImageUrl).delete();
-        }
-      }
+
       image = File(picked.path);
       Directory duplicateFilePath = await getApplicationDocumentsDirectory();
-      String dirPathCurrent = duplicateFilePath.path;
+      String dirPathCurrent = "${duplicateFilePath.path}/images";
       String filename = basename(picked.path);
       newImage = await image!.copy("$dirPathCurrent/$filename");
       if (Platform.isWindows) {
@@ -95,14 +91,14 @@ class UpdateNoteController extends GetxController {
       Get.back();
     } on PlatformException catch (e) {
       Get.defaultDialog(
-        title: "Message",
+        title: "message".tr,
         content: Text("${e.message}", style: const TextStyle(fontSize: 17)),
         actions: [
           TextButton(
               onPressed: () {
                 Get.back();
               },
-              child: const Text("OK")),
+              child: Text("ok".tr)),
         ],
       );
     }

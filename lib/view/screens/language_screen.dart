@@ -3,8 +3,6 @@ import 'package:get/get.dart';
 import 'package:note_book/localizations/locale_controller.dart';
 import 'package:note_book/model/data_static/assets_model.dart';
 
-import '../../services/service.dart';
-
 class LanguageScreen extends StatelessWidget {
   LanguageScreen({super.key});
   final LocaleController locale = Get.find();
@@ -17,36 +15,6 @@ class LanguageScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Align(
-              alignment: lang == null ? Alignment.topLeft : Alignment.topRight,
-              child: IconButton(
-                  onPressed: () {
-                    if (Get.isDarkMode) {
-                      Get.changeTheme(ThemeData(
-                        fontFamily: 'robotocondensed-regular',
-                        colorScheme: ColorScheme.fromSeed(
-                            seedColor: const Color(0xffd5b001),
-                            brightness: Brightness.light),
-                        brightness: Brightness.light,
-                        elevatedButtonTheme: ElevatedButtonThemeData(
-                            style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 86, 59, 2),
-                        )),
-                        useMaterial3: true,
-                      ));
-                    } else {
-                      Get.changeTheme(ThemeData(
-                        fontFamily: 'robotocondensed-regular',
-                        brightness: Brightness.dark,
-                        colorScheme: ColorScheme.fromSeed(
-                            seedColor: const Color(0xffd5b001),
-                            brightness: Brightness.dark),
-                        useMaterial3: true,
-                      ));
-                    }
-                  },
-                  icon: Icon(Icons.light_mode_rounded)),
-            ),
             ClipRRect(
               borderRadius: BorderRadius.circular(120),
               child: Image.asset(

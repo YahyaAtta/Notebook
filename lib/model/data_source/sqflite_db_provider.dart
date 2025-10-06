@@ -91,8 +91,16 @@ CREATE TABLE `notes`(
   }
 
   Future<void> myDeleteDatabase() async {
-    String databasePath = await getDatabasesPath();
-    String path = join(databasePath, "Notebook.db");
-    await deleteDatabase(path);
+    if (Platform.isWindows) {
+      sqfliteFfiInit();
+      DatabaseFactory databaseFactory = databaseFactoryFfi;
+      String databasePath = (await getApplicationDocumentsDirectory()).path;
+      String path = join(databasePath, "Notebook.db");
+      await databaseFactory.deleteDatabase(path);
+    } else {
+      String databasePath = await getDatabasesPath();
+      String path = join(databasePath, "Notebook.db");
+      await deleteDatabase(path);
+    }
   }
 }

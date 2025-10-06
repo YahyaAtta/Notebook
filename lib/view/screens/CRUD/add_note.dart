@@ -102,7 +102,7 @@ class AddNote extends StatelessWidget {
                             tooltip:
                                 noteTitle.text == "" && noteContent.text == ""
                                     ? ''
-                                    : 'Add Note',
+                                    : 'addnote'.tr,
                           ),
                         )),
                 IconButton(

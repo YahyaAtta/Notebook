@@ -82,6 +82,8 @@ class NotebookLocale implements Translations {
           "updatenote": "تحديث الملاحظة",
           "updateimage": "تحديث الصورة",
           "nofile": "لا يوجد ملف صوتي",
+          "ok": "موافق",
+          "middletext": "هل تريد إعادة ضبط التطبيق ؟",
         },
         "en_US": {
           "home": "Notebook",
@@ -161,6 +163,9 @@ class NotebookLocale implements Translations {
           "normal": "Normal",
           "italic": "Italic",
           "updatenote": "Update Note",
+          "updateimage": "Update Image",
+          "ok": "OK",
+          "middletext": "Do You Want to Reset App?"
         }
       };
 }
