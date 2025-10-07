@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.2.0+1
+version: 1.5.0+1
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -46,23 +46,11 @@ dependencies:
   shared_preferences: ^2.5.3
   record: ^6.1.1
   pdf: ^3.11.3
-  # gallery_saver_plus: ^3.2.9
-  # permission_handler: ^12.0.1
   jni: ^0.14.2
   sqflite_common_ffi: any
   external_path: ^2.2.0
   file_saver: ^0.3.1
   get: ^4.7.2
-
-msix_config:
-
-   display_name: "Notebook"
-   publisher: "YATECH"
-   publisher_display_name: "YATECH"
-   msix_version: 1.2.0.0
-   logo_path: "assets/icon/icon.png"
-   capabilities: microphone  
-   identity_name: "com.YATECH.NoteBook"
   
 dev_dependencies:
   flutter_test:
@@ -76,16 +64,11 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   jnigen: ^0.14.2
   flutter_launcher_icons: ^0.14.4
-  msix: ^3.16.12
 
 flutter_icons:
   android: "launcher_icon"
   ios: true
   image_path: "assets/icon/icon.png"
-  windows:
-    generate: true
-    image_path: "assets/icon/icon.png"
-    icon_size: 70
 
 
 # For information on the generic Dart part of this file, see the

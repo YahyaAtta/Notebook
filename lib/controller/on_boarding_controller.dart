@@ -6,7 +6,6 @@ import 'package:note_book/services/service.dart';
 import '../view/widgets/intro.dart';
 
 class OnBoardingController extends GetxController {
-  NotebookServices services = NotebookServices();
   final PageController pageController = PageController();
   int currentIndex = 0;
   bool isLastPage = false;

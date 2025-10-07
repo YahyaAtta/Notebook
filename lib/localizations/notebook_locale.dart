@@ -165,7 +165,7 @@ class NotebookLocale implements Translations {
           "updatenote": "Update Note",
           "updateimage": "Update Image",
           "ok": "OK",
-          "middletext": "Do You Want to Reset App?"
+          "middletext": "Do You Want to Reset App?",
         }
       };
 }

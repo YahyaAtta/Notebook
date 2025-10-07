@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:note_book/controller/utils_controller.dart';
 import 'package:note_book/model/data_source/sqflite_db_provider.dart';
 import 'package:note_book/model/data_static/assets_model.dart';
 import 'package:sqflite/sqflite.dart';
@@ -129,18 +130,6 @@ class NoteController extends GetxController {
     return _notesDb;
   }
 
-  File? image;
-  File get getImage {
-    return image!;
-  }
-
-  File? newImage;
-  File get getNewImage {
-    return newImage!;
-  }
-
-  String? imageurl;
-  String? editImageurl;
   int? noteColor = Colors.green[600]!.toARGB32();
   ImagePicker imagePicker = ImagePicker();
   Future<void> addNote(
@@ -217,17 +206,14 @@ SELECT * FROM notes ORDER BY date DESC''');
       int r = await sqldb.updateData('''
 UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentType="$contentType",contentIndex=$contentIndex,noteImageUrl="$noteImageurl" , noteColor =$noteColor , contentSize=$contentSize , fontStyle="$fontStyle",fontWeight="$fontWeight"  WHERE noteId = $noteId
 ''');
-
       if (r > 0) {
-        editImageurl = null;
-        imageurl = null;
-        newImage = null;
         setIndex(0);
         fs = 23;
         setContentType("Personal");
         this.noteColor = Colors.green[600]!.toARGB32();
         fontStyleString = "normal";
         Get.back();
+        UtilsController().showToastFromNative("", 1);
         update();
       }
     } on DatabaseException catch (e) {

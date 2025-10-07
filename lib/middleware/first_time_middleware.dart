@@ -7,7 +7,8 @@ class FirstTimeMiddleWare extends GetMiddleware {
   RouteSettings? redirect(String? route) {
     if (sharedPreferences!.getBool("isFirstTime") != null) {
       return RouteSettings(name: '/home');
+    } else {
+      return RouteSettings(name: '/change');
     }
-    return null;
   }
 }

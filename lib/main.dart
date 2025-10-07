@@ -26,7 +26,7 @@ void main() async {
 }
 
 Future initApp() async {
-  Get.putAsync(() => NotebookServices().getInitalApp());
+  await Get.putAsync(() => NotebookServices().getInitalApp());
 }
 
 class MyApp extends GetView<NotebookServices> {
@@ -46,7 +46,10 @@ class MyApp extends GetView<NotebookServices> {
             name: '/splash',
             page: () => SplashScreen(),
             middlewares: [FirstTimeMiddleWare()]),
-        GetPage(name: '/change', page: () => LanguageScreen()),
+        GetPage(
+          name: '/change',
+          page: () => LanguageScreen(),
+        ),
         GetPage(
           name: '/Intro',
           page: () => Intro(),

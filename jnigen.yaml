@@ -10,3 +10,7 @@ source_path:
   - 'android/app/src/main/kotlin'
 classes:
   - 'com.example.note_book.KotlinHardwareUtils'
+  - "android.content.Intent"
+  - "android.content.Context"
+  - "android.app.Activity"
+  - "android.net.Uri"

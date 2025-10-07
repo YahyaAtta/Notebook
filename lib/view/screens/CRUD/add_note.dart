@@ -94,7 +94,9 @@ class AddNote extends StatelessWidget {
                                         fontStyle: c.controller.fontStyleString,
                                         fontWeight:
                                             c.controller.fontWeightString,
-                                        noteRecord: c.getPathAudio,
+                                        noteRecord: c.getPathAudio == "empty"
+                                            ? "empty"
+                                            : c.getPathAudio,
                                       );
                                     }
                                   },

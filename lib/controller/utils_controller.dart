@@ -4,18 +4,43 @@ import 'package:external_path/external_path.dart';
 import 'package:get/get.dart';
 import 'package:jni/jni.dart';
 import 'package:path_provider/path_provider.dart';
-import 'bindings/hardware_utils_bindings.dart';
+import 'bindings/hardware_utils_bindings.dart' as android;
 import 'package:flutter/material.dart';
 import 'package:record/record.dart';
 
 final record = AudioRecorder();
 
 class UtilsController {
+  Future<void> openUrlInBrowserAndroid(String url) async {
+    if (Platform.isAndroid) {
+      final android.Context context = android.Context.fromReference(
+          Jni.getCachedApplicationContext()); // Create Context
+      final android.Intent intent =
+          android.Intent.new$3(android.Intent.ACTION_VIEW); // Create Intent
+      final urlBrowser = android.Uri.parse(url.toJString()); // Set Uri
+      intent.setData(urlBrowser); // setData to Intent
+      intent
+          .setFlags(android.Intent.FLAG_ACTIVITY_NEW_TASK); // setFlag to Intent
+
+      try {
+        context.startActivity(intent); // Launching Uri
+      } on JniException catch (e) {
+        showToastFromNative(e.message.toString(), 1);
+      } finally {
+        context.release();
+        urlBrowser!.release();
+        intent.release();
+      }
+    }
+  }
+
   void showToastFromNative(String message, int duration) async {
     if (Platform.isAndroid) {
       JString nativeMessage = message.toJString();
-      final activity = JObject.fromReference(Jni.getCurrentActivity());
-      KotlinHardwareUtils().customShowToast(activity, nativeMessage, duration);
+      android.Activity activity =
+          android.Activity.fromReference(Jni.getCurrentActivity());
+      android.KotlinHardwareUtils()
+          .customShowToast(activity, nativeMessage, duration);
     }
   }
 

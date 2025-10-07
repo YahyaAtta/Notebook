@@ -25,8 +25,4 @@ class KotlinHardwareUtils {
             Toast.makeText(mainActivity,string,duration).show()
         }
     }
-    fun openLink(mainActivity: Activity,url:String) {
-      mainActivity.startActivity(Intent.getIntent(url))
-    }
-
 }

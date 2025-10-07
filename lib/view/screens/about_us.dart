@@ -1,7 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jni/jni.dart';
-import 'package:note_book/controller/bindings/hardware_utils_bindings.dart';
+import 'package:note_book/controller/utils_controller.dart';
 import 'package:note_book/model/data_static/assets_model.dart';
 
 class About extends StatelessWidget {
@@ -83,15 +83,16 @@ class About extends StatelessWidget {
                   style: TextStyle(fontSize: 20),
                   textAlign: TextAlign.center,
                 ),
-                TextButton(
-                    onPressed: () {
-                      KotlinHardwareUtils().openLink(
-                          JObject.fromReference(Jni.getCurrentActivity()),
-                          "http://www.github.com/YahyaAtta".toJString());
-                    },
-                    child: Text("My Github",
-                        style:
-                            TextStyle(decoration: TextDecoration.underline))),
+                Platform.isAndroid
+                    ? TextButton(
+                        onPressed: () {
+                          UtilsController().openUrlInBrowserAndroid(
+                              "https://www.github.com/YahyaAtta");
+                        },
+                        child: Text("My Github",
+                            style: TextStyle(
+                                decoration: TextDecoration.underline)))
+                    : Text(""),
               ],
             )),
           ),

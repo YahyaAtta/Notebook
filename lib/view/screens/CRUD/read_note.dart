@@ -29,7 +29,7 @@ class ReadNote extends StatelessWidget {
                 onTap: readController.note!.noteRecord == "empty"
                     ? null
                     : () async {
-                        readController.savePDFClient();
+                        readController.saveAudioClient();
                       },
                 child: Text("saveaudio".tr),
               ),

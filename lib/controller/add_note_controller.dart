@@ -11,7 +11,6 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 class AddNoteController extends GetxController {
-  ImagePicker imagePicker = ImagePicker();
   bool isPicked = false;
   File? image;
   File? newImage;
@@ -141,6 +140,8 @@ class AddNoteController extends GetxController {
   }
 
   Future<void> uploadImage({required ImageSource source}) async {
+    ImagePicker imagePicker = ImagePicker();
+
     try {
       XFile? picked = await imagePicker.pickImage(source: source);
       if (picked == null) return;

@@ -13,9 +13,7 @@ class NotebookServices extends GetxService {
     lang = sharedPreferences!.getString("lang");
     SqlDB db = SqlDB();
     await db.initDB();
-    if (isFirstTime == null) {
-      Get.offNamed('/change');
-    }
+
     return this;
   }
 }

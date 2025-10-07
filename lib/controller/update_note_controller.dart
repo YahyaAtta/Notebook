@@ -20,7 +20,6 @@ class UpdateNoteController extends GetxController {
   String? editNoteContent;
   NoteController controller = Get.find<NoteController>();
   String? editNoteTitle;
-  ImagePicker imagePicker = ImagePicker();
   Future updateNoteToDatabase(
       {String? noteTitle,
       String? noteContent,
@@ -71,10 +70,10 @@ class UpdateNoteController extends GetxController {
 
   Future<void> editUploadImage(
       {String? noteImageUrl, required ImageSource source}) async {
+    ImagePicker imagePicker = ImagePicker();
     try {
       XFile? picked = await imagePicker.pickImage(source: source);
       if (picked == null) return;
-
       image = File(picked.path);
       Directory duplicateFilePath = await getApplicationDocumentsDirectory();
       String dirPathCurrent = "${duplicateFilePath.path}/images";
@@ -82,7 +81,7 @@ class UpdateNoteController extends GetxController {
       newImage = await image!.copy("$dirPathCurrent/$filename");
       if (Platform.isWindows) {
       } else {
-        await File(picked.path).delete();
+        await image!.delete();
       }
       editImageUrl = newImage!.path;
       userPicked = newImage!.path;
