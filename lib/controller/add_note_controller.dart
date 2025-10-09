@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -145,10 +146,11 @@ class AddNoteController extends GetxController {
     try {
       XFile? picked = await imagePicker.pickImage(source: source);
       if (picked == null) return;
+      int r = Random().nextInt(1000000000);
       image = File(picked.path);
       Directory duplicateFilePath = await getApplicationDocumentsDirectory();
       String dirPathCurrent = duplicateFilePath.path;
-      String filename = basename(picked.path);
+      String filename = "$r${basename(picked.path)}";
       Directory images = Directory("$dirPathCurrent/images");
       images.createSync();
       newImage = await image!.copy("${images.path}/$filename");

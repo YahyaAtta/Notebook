@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:note_book/controller/utils_controller.dart';
 import 'package:note_book/model/data_source/sqflite_db_provider.dart';
-import 'package:note_book/model/data_static/assets_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class NoteController extends GetxController {
@@ -154,10 +153,15 @@ SELECT * FROM notes ORDER BY date DESC''');
         setIndex(0);
         fs = 23;
         setContentType("Personal");
+        noteTitle = "";
+        noteContent = "";
+        noteImageurl = null;
         this.noteColor = Colors.green[600]!.toARGB32();
         fontStyleString = "normal";
+        fontWeightString = "normal";
         Get.back();
         update();
+        UtilsController().showToastFromNative("noteAdd".tr, 1);
       }
     } on DatabaseException catch (e) {
       Get.defaultDialog(
@@ -207,14 +211,10 @@ SELECT * FROM notes ORDER BY date DESC''');
 UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentType="$contentType",contentIndex=$contentIndex,noteImageUrl="$noteImageurl" , noteColor =$noteColor , contentSize=$contentSize , fontStyle="$fontStyle",fontWeight="$fontWeight"  WHERE noteId = $noteId
 ''');
       if (r > 0) {
-        setIndex(0);
-        fs = 23;
-        setContentType("Personal");
-        this.noteColor = Colors.green[600]!.toARGB32();
-        fontStyleString = "normal";
+        await sqldb.readData("SELECT * FROM notes ORDER BY date DESC");
         Get.back();
-        UtilsController().showToastFromNative("", 1);
         update();
+        UtilsController().showToastFromNative("noteUpdate".tr, 1);
       }
     } on DatabaseException catch (e) {
       Get.defaultDialog(
@@ -234,23 +234,16 @@ UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentT
   Future<void> deleteNote(
       {int? noteId, String? noteImageurl, String? noteRecord}) async {
     try {
-      if (noteImageurl == AssetsImageModel.notebook) {
-        if (noteRecord != "empty") {
-          await File(noteRecord!).delete();
-        }
-      } else {
-        if (noteRecord != "empty") {
-          await File(noteRecord!).delete();
-        }
-        if (noteImageurl != "empty") {
-          await File(noteImageurl!).delete();
-        }
+      if (noteRecord != "empty") {
+        await File(noteRecord!).delete();
+      }
+      if (noteImageurl != "empty") {
+        await File(noteImageurl!).delete();
       }
       int r =
           await sqldb.deleteData("DELETE FROM `notes` WHERE noteId =$noteId");
       if (r > 0) {
-        //AppLogic().showToastFromNative("The Note Deleted Successfully", 1);
-
+        UtilsController().showToastFromNative("noteDelete".tr, 1);
         _notesDb =
             await sqldb.readData("SELECT * FROM notes ORDER BY date DESC");
       }

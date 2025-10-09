@@ -71,7 +71,8 @@ class UpdateNote extends StatelessWidget {
                             noteImageurl:
                                 c.editImageUrl ?? c.note!.noteImageUrl,
                             noteTitle: c.editNoteTitle ?? c.note!.noteTitle,
-                            noteContent: c.editNoteContent,
+                            noteContent:
+                                c.editNoteContent ?? c.note!.noteContent,
                             noteColor: c.controller.noteColor,
                             noteId: c.note!.noteId,
                             contentType: c.controller.getContentType,
@@ -121,8 +122,10 @@ class UpdateNote extends StatelessWidget {
                                         null ||
                                     updateNoteController.editImageUrl ==
                                         "empty") &&
-                                updateNoteController.note!.noteImageUrl ==
-                                    "empty"
+                                (updateNoteController.note!.noteImageUrl ==
+                                        "empty" ||
+                                    updateNoteController.note!.noteImageUrl ==
+                                        null)
                             ? Image.asset(
                                 AssetsImageModel.notebook,
                                 height:

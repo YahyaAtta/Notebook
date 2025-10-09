@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -32,8 +33,12 @@ class UpdateNoteController extends GetxController {
       String? fontStyle,
       String? fontWeight}) async {
     ispicked = true;
-    if (note!.noteImageUrl != "empty") {
-      await File(note!.noteImageUrl).delete();
+    // Check if user selected image
+    if (ispicked == true) {
+      if (userPicked == null) {
+      } else {
+        await File(note!.noteImageUrl).delete();
+      }
     }
     controller.updateNote(
         noteTitle: noteTitle,
@@ -74,10 +79,11 @@ class UpdateNoteController extends GetxController {
     try {
       XFile? picked = await imagePicker.pickImage(source: source);
       if (picked == null) return;
+      int r = Random().nextInt(1000000000);
       image = File(picked.path);
       Directory duplicateFilePath = await getApplicationDocumentsDirectory();
       String dirPathCurrent = "${duplicateFilePath.path}/images";
-      String filename = basename(picked.path);
+      String filename = "$r${basename(picked.path)}";
       newImage = await image!.copy("$dirPathCurrent/$filename");
       if (Platform.isWindows) {
       } else {
@@ -104,6 +110,7 @@ class UpdateNoteController extends GetxController {
   }
 
   Future checkImage() async {
+    print("Check Image Function");
     if (ispicked == false) {
       if (userPicked == null) {
       } else {
