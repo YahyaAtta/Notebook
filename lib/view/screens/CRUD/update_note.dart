@@ -124,6 +124,7 @@ class UpdateNote extends StatelessWidget {
                                         "empty") &&
                                 (updateNoteController.note!.noteImageUrl ==
                                         "empty" ||
+                                    // ignore: unnecessary_null_comparison
                                     updateNoteController.note!.noteImageUrl ==
                                         null)
                             ? Image.asset(

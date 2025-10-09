@@ -110,7 +110,6 @@ class UpdateNoteController extends GetxController {
   }
 
   Future checkImage() async {
-    print("Check Image Function");
     if (ispicked == false) {
       if (userPicked == null) {
       } else {
