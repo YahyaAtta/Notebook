@@ -8,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:note_book/controller/note_controller.dart';
 import 'package:path/path.dart' show basename;
 import 'package:path_provider/path_provider.dart';
-
 import '../model/notes.dart';
 
 class UpdateNoteController extends GetxController {
@@ -21,36 +20,41 @@ class UpdateNoteController extends GetxController {
   String? editNoteContent;
   NoteController controller = Get.find<NoteController>();
   String? editNoteTitle;
-  Future updateNoteToDatabase(
-      {String? noteTitle,
-      String? noteContent,
-      String? contentType,
-      int? contentIndex,
-      String? noteImageurl,
-      int? noteColor,
-      int? noteId,
-      double? contentSize,
-      String? fontStyle,
-      String? fontWeight}) async {
+  Future updateNoteToDatabase({
+    String? noteTitle,
+    String? noteContent,
+    String? contentType,
+    int? contentIndex,
+    String? noteImageurl,
+    int? noteColor,
+    int? noteId,
+    double? contentSize,
+    String? fontStyle,
+    String? fontWeight,
+  }) async {
     ispicked = true;
     // Check if user selected image
     if (ispicked == true) {
       if (userPicked == null) {
       } else {
-        await File(note!.noteImageUrl).delete();
+        if (note!.noteImageUrl == "empty") {
+        } else {
+          await File(note!.noteImageUrl).delete();
+        }
       }
     }
     controller.updateNote(
-        noteTitle: noteTitle,
-        noteContent: noteContent,
-        contentIndex: contentIndex,
-        contentSize: contentSize,
-        contentType: contentType,
-        fontStyle: fontStyle,
-        fontWeight: fontWeight,
-        noteColor: noteColor,
-        noteId: noteId,
-        noteImageurl: noteImageurl);
+      noteTitle: noteTitle,
+      noteContent: noteContent,
+      contentIndex: contentIndex,
+      contentSize: contentSize,
+      contentType: contentType,
+      fontStyle: fontStyle,
+      fontWeight: fontWeight,
+      noteColor: noteColor,
+      noteId: noteId,
+      noteImageurl: noteImageurl,
+    );
   }
 
   void getRefresh() {
@@ -73,8 +77,10 @@ class UpdateNoteController extends GetxController {
     }
   }
 
-  Future<void> editUploadImage(
-      {String? noteImageUrl, required ImageSource source}) async {
+  Future<void> editUploadImage({
+    String? noteImageUrl,
+    required ImageSource source,
+  }) async {
     ImagePicker imagePicker = ImagePicker();
     try {
       XFile? picked = await imagePicker.pickImage(source: source);
@@ -83,15 +89,19 @@ class UpdateNoteController extends GetxController {
       image = File(picked.path);
       Directory duplicateFilePath = await getApplicationDocumentsDirectory();
       String dirPathCurrent = "${duplicateFilePath.path}/images";
+      Directory directory = Directory(dirPathCurrent);
+      if (directory.existsSync()) {
+      } else {
+        directory.createSync();
+      }
       String filename = "$r${basename(picked.path)}";
-      newImage = await image!.copy("$dirPathCurrent/$filename");
+      newImage = await image!.copy("${directory.path}/$filename");
       if (Platform.isWindows) {
       } else {
         await image!.delete();
       }
       editImageUrl = newImage!.path;
       userPicked = newImage!.path;
-      //showToastFromNative("Image Uploded!", 1);
       update();
       Get.back();
     } on PlatformException catch (e) {
@@ -100,10 +110,11 @@ class UpdateNoteController extends GetxController {
         content: Text("${e.message}", style: const TextStyle(fontSize: 17)),
         actions: [
           TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: Text("ok".tr)),
+            onPressed: () {
+              Get.back();
+            },
+            child: Text("ok".tr),
+          ),
         ],
       );
     }
