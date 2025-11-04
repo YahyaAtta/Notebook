@@ -7,7 +7,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   file_saver
   file_selector_linux
   record_linux
-  rive_common
+  rive_native
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

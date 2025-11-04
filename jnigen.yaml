@@ -6,11 +6,11 @@ output:
     path: lib/controller/bindings/hardware_utils_bindings.dart
     structure: single_file
 
-source_path:
-  - 'android/app/src/main/kotlin'
 classes:
-  - 'com.example.note_book.KotlinHardwareUtils'
   - "android.content.Intent"
   - "android.content.Context"
   - "android.app.Activity"
   - "android.net.Uri"
+  - "android.os.Build"
+  - "android.widget.Toast"
+  - "java.lang.Runnable"

@@ -13,34 +13,60 @@ final record = AudioRecorder();
 class UtilsController {
   Future<void> openUrlInBrowserAndroid(String url) async {
     if (Platform.isAndroid) {
+      JReference contextRef = Jni.getCachedApplicationContext();
       final android.Context context = android.Context.fromReference(
-          Jni.getCachedApplicationContext()); // Create Context
-      final android.Intent intent =
-          android.Intent.new$3(android.Intent.ACTION_VIEW); // Create Intent
-      final urlBrowser = android.Uri.parse(url.toJString()); // Set Uri
+        contextRef,
+      ); // Create Context
+      final android.Intent intent = android.Intent.new$3(
+        android.Intent.ACTION_VIEW,
+      ); // Create Intent
+      final android.Uri? urlBrowser = android.Uri.parse(
+        url.toJString(),
+      ); // Set Uri
       intent.setData(urlBrowser); // setData to Intent
-      intent
-          .setFlags(android.Intent.FLAG_ACTIVITY_NEW_TASK); // setFlag to Intent
-
+      intent.setFlags(
+        android.Intent.FLAG_ACTIVITY_NEW_TASK,
+      ); // setFlag to Intent
       try {
-        context.startActivity(intent); // Launching Uri
+        context.startActivity(
+          intent,
+        ); // Launching Uri into Browser Using intent
       } on JniException catch (e) {
         showToastFromNative(e.message.toString(), 1);
       } finally {
-        context.release();
-        urlBrowser!.release();
-        intent.release();
+        context.release(); // release context  from Memory
+        urlBrowser!.release(); // release urlBrowser from Memory
+        intent.release(); // release intent from Memory
       }
     }
   }
 
+  void showToastAndroid(
+    android.Activity activity,
+    JString nativeMessage,
+    int duration,
+  ) {
+    final android.Context context = android.Context.fromReference(
+      Jni.getCachedApplicationContext(),
+    );
+    activity.runOnUiThread(
+      android.Runnable.implement(
+        android.$Runnable(
+          run: () {
+            android.Toast.makeText$1(context, nativeMessage, duration)!.show();
+          },
+        ),
+      ),
+    );
+  }
+
   void showToastFromNative(String message, int duration) async {
     if (Platform.isAndroid) {
+      final android.Activity activity = android.Activity.fromReference(
+        Jni.getCurrentActivity(),
+      );
       JString nativeMessage = message.toJString();
-      android.Activity activity =
-          android.Activity.fromReference(Jni.getCurrentActivity());
-      android.KotlinHardwareUtils()
-          .customShowToast(activity, nativeMessage, duration);
+      showToastAndroid(activity, nativeMessage, duration);
     }
   }
 
@@ -48,50 +74,57 @@ class UtilsController {
     Get.snackbar(title, message, snackPosition: SnackPosition.BOTTOM);
   }
 
-  void chooseImage(
-      {String? title,
-      String? galleryContent,
-      String? cameraContent,
-      Color? color,
-      void Function()? onCamera,
-      void Function()? onGallery}) {
-    Get.bottomSheet(Container(
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(25),
-      ),
-      padding: const EdgeInsets.all(20),
-      height: 200,
-      width: double.infinity,
-      alignment: Alignment.topLeft,
-      child: Column(
-        children: [
-          Text(
-            title!,
-            style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 23),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          ListTile(
-            onTap: onGallery,
-            leading: const Icon(Icons.photo),
-            title: Text(
-              galleryContent!,
-              style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 20),
+  void chooseImage({
+    String? title,
+    String? galleryContent,
+    String? cameraContent,
+    Color? color,
+    void Function()? onCamera,
+    void Function()? onGallery,
+  }) {
+    Get.bottomSheet(
+      Container(
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(25),
+        ),
+        padding: const EdgeInsets.all(20),
+        height: 200,
+        width: double.infinity,
+        alignment: Alignment.topLeft,
+        child: Column(
+          children: [
+            Text(
+              title!,
+              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 23),
             ),
-          ),
-          ListTile(
-            onTap: onCamera,
-            leading: const Icon(Icons.camera),
-            title: Text(
-              cameraContent!,
-              style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 20),
+            const SizedBox(height: 5),
+            ListTile(
+              onTap: onGallery,
+              leading: const Icon(Icons.photo),
+              title: Text(
+                galleryContent!,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 20,
+                ),
+              ),
             ),
-          ),
-        ],
+            ListTile(
+              onTap: onCamera,
+              leading: const Icon(Icons.camera),
+              title: Text(
+                cameraContent!,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
-    ));
+    );
   }
 
   Future<String?> startRecord() async {
@@ -122,7 +155,8 @@ Future<bool> isRecordingWhile() async {
 
 Future getPath() async {
   String path = await ExternalPath.getExternalStoragePublicDirectory(
-      ExternalPath.DIRECTORY_DOWNLOAD);
+    ExternalPath.DIRECTORY_DOWNLOAD,
+  );
   return path;
 }
 

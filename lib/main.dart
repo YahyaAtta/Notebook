@@ -43,17 +43,12 @@ class MyApp extends GetView<NotebookServices> {
       initialRoute: '/splash',
       getPages: [
         GetPage(
-            name: '/splash',
-            page: () => SplashScreen(),
-            middlewares: [FirstTimeMiddleWare()]),
-        GetPage(
-          name: '/change',
-          page: () => LanguageScreen(),
+          name: '/splash',
+          page: () => SplashScreen(),
+          middlewares: [FirstTimeMiddleWare()],
         ),
-        GetPage(
-          name: '/Intro',
-          page: () => Intro(),
-        ),
+        GetPage(name: '/change', page: () => LanguageScreen()),
+        GetPage(name: '/Intro', page: () => Intro()),
         GetPage(name: '/home', page: () => HomeScreen()),
         GetPage(name: '/time', page: () => CurrentTime()),
         GetPage(name: '/device', page: () => NativeDeviceInfo()),
@@ -69,19 +64,24 @@ class MyApp extends GetView<NotebookServices> {
       theme: ThemeData(
         fontFamily: 'robotocondensed-regular',
         colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xffd5b001), brightness: Brightness.light),
+          seedColor: const Color(0xffd5b001),
+          brightness: Brightness.light,
+        ),
         brightness: Brightness.light,
         elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-          backgroundColor: const Color.fromARGB(255, 86, 59, 2),
-        )),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromARGB(255, 86, 59, 2),
+          ),
+        ),
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
         fontFamily: 'robotocondensed-regular',
         brightness: Brightness.dark,
         colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xffd5b001), brightness: Brightness.dark),
+          seedColor: const Color(0xffd5b001),
+          brightness: Brightness.dark,
+        ),
         useMaterial3: true,
       ),
       themeMode: ThemeMode.system,

@@ -11,28 +11,19 @@ class NativeDeviceInfo extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         title: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: deviceInfoController.isAndroidPlatform
-                ? [
-                    Icon(
-                      Icons.phone_android,
-                      size: 33,
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Text("Native Device Info"),
-                  ]
-                : [
-                    Icon(
-                      Icons.window_sharp,
-                      size: 33,
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    Text("Native Device Info"),
-                  ]),
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: deviceInfoController.isAndroidPlatform
+              ? [
+                  Icon(Icons.phone_android, size: 33),
+                  SizedBox(width: 5),
+                  Text("Native Device Info"),
+                ]
+              : [
+                  Icon(Icons.window_sharp, size: 33),
+                  SizedBox(width: 5),
+                  Text("Native Device Info"),
+                ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -41,38 +32,33 @@ class NativeDeviceInfo extends StatelessWidget {
             Card(
               child: ListTile(
                 title: GetBuilder<DeviceInfoController>(
-                    builder: (c) => Column(
-                          children: c.isAndroidPlatform
-                              ? [
-                                  Text(
-                                      "Manufacturer:${c.hardware!['Manufacturer']}"),
-                                  Text("Model No: ${c.hardware!['Model No']}"),
-                                  Text("Board: ${c.hardware!['Board']}"),
-                                  Text(
-                                      "Android Version: ${c.hardware!['Version']}"),
-                                ]
-                              : [
-                                  Text(
-                                      "Operating System: ${c.operatingSystemWindows}"),
-                                  Text(c.operatingSystemVersion),
-                                  Text(
-                                      "Number Of Processors: ${c.numberOfProcessor}")
-                                ],
-                        )),
-                leading: deviceInfoController.isAndroidPlatform
-                    ? Icon(
-                        Icons.android_rounded,
-                        size: 40,
-                      )
-                    : Icon(
-                        Icons.window_sharp,
-                        size: 40,
-                      ),
-                trailing: Icon(
-                  Icons.verified,
-                  size: 34,
-                  color: Colors.green,
+                  builder: (c) => Column(
+                    children: c.isAndroidPlatform
+                        ? [
+                            Text("Manufacturer:${c.hardware!['Manufacturer']}"),
+                            Text("Model No: ${c.hardware!['Model']}"),
+                            Text("Board: ${c.hardware!['Board']}"),
+                            Text("Android Version: ${c.hardware!['Version']}"),
+                            Text(
+                              "Android Codename: ${c.hardware!['Codename']}",
+                            ),
+                            Text("Android SDK: ${c.hardware!['Sdkint']}"),
+                          ]
+                        : [
+                            Text(
+                              "Operating System: ${c.operatingSystemWindows}",
+                            ),
+                            Text(c.operatingSystemVersion),
+                            Text(
+                              "Number Of Processors: ${c.numberOfProcessor}",
+                            ),
+                          ],
+                  ),
                 ),
+                leading: deviceInfoController.isAndroidPlatform
+                    ? Icon(Icons.android_rounded, size: 40)
+                    : Icon(Icons.window_sharp, size: 40),
+                trailing: Icon(Icons.verified, size: 34, color: Colors.green),
                 contentPadding: EdgeInsets.all(30),
               ),
             ),

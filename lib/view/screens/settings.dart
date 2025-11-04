@@ -59,8 +59,8 @@ class SettingsScreen extends StatelessWidget {
                                       groupValue:
                                           settingsController.selectedLang,
                                       onChanged: (c) {
+                                        debugPrint(c);
                                         settingsController.changeLanguage(c!);
-                                        localeController.changeLang("en");
                                       },
                                       child: Row(
                                         spacing: 10,
@@ -81,8 +81,8 @@ class SettingsScreen extends StatelessWidget {
                                       groupValue:
                                           settingsController.selectedLang,
                                       onChanged: (c) {
+                                        debugPrint(c);
                                         settingsController.changeLanguage(c!);
-                                        localeController.changeLang("ar");
                                       },
                                       child: Row(
                                         spacing: 10,
