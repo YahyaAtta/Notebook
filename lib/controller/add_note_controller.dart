@@ -26,31 +26,33 @@ class AddNoteController extends GetxController {
   UtilsController utilsController = UtilsController();
   final NoteController controller = Get.find<NoteController>();
 
-  Future addNoteToDatabase(
-      {String? noteTitle,
-      String? noteContent,
-      int? noteColor,
-      int? contentIndex,
-      double? contentSize,
-      String? noteRecord,
-      String? contentType,
-      String? fontStyle,
-      String? fontWeight,
-      String? noteImageUrl}) async {
+  Future addNoteToDatabase({
+    String? noteTitle,
+    String? noteContent,
+    int? noteColor,
+    int? contentIndex,
+    double? contentSize,
+    String? noteRecord,
+    String? contentType,
+    String? fontStyle,
+    String? fontWeight,
+    String? noteImageUrl,
+  }) async {
     isPicked = true;
     controller.addNote(
-        noteTitle: noteTitle,
-        noteContent: noteContent,
-        noteColor: noteColor,
-        contentIndex: contentIndex,
-        contentSize: contentSize,
-        noteRecord: noteRecord,
-        noteDate: noteDate,
-        contentType: contentType,
-        fontStyle: fontStyle,
-        fontWeight: fontWeight,
-        noteImageurl: noteImageUrl,
-        noteTime: noteTime);
+      noteTitle: noteTitle,
+      noteContent: noteContent,
+      noteColor: noteColor,
+      contentIndex: contentIndex,
+      contentSize: contentSize,
+      noteRecord: noteRecord,
+      noteDate: noteDate,
+      contentType: contentType,
+      fontStyle: fontStyle,
+      fontWeight: fontWeight,
+      noteImageurl: noteImageUrl,
+      noteTime: noteTime,
+    );
   }
 
   void getCurrentDateAndTime() {
@@ -111,7 +113,8 @@ class AddNoteController extends GetxController {
       if (Platform.isWindows) {
         utilsController.showSnackBarGet("message".tr, "startrecording".tr);
       } else {
-        utilsController.showToastFromNative("startrecording".tr, 1);
+        // utilsController.showToastFromNative("startrecording".tr, 1);
+        Toast.makeText(text: "startrecording".tr, duration: 1);
       }
     } else {
       stopRecord();
@@ -121,7 +124,8 @@ class AddNoteController extends GetxController {
       if (Platform.isWindows) {
         utilsController.showSnackBarGet("message".tr, "recordsave".tr);
       } else {
-        utilsController.showToastFromNative("recordsave".tr, 1);
+        // utilsController.showToastFromNative("recordsave".tr, 1);
+        Toast.makeText(text: "recordsave".tr, duration: 1);
       }
     }
   }
@@ -159,7 +163,8 @@ class AddNoteController extends GetxController {
         await image!.delete();
       }
       imagePathAdd = newImage!.path;
-      UtilsController().showToastFromNative("imageupload".tr, 1);
+      // UtilsController().showToastFromNative("imageupload".tr, 1);
+      Toast.makeText(text: "imageupload".tr  ,duration: 1);
       update();
       Get.back();
     } on PlatformException catch (e) {
@@ -168,10 +173,11 @@ class AddNoteController extends GetxController {
         content: Text("${e.message}", style: const TextStyle(fontSize: 17)),
         actions: [
           TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: const Text("OK")),
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text("OK"),
+          ),
         ],
       );
     }

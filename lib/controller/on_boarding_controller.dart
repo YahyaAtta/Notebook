@@ -11,21 +11,27 @@ class OnBoardingController extends GetxController {
   bool isLastPage = false;
   final List<Widget> pages = [
     IntroComponent(
-        title: 'onboardingtitle1'.tr,
-        desc: 'onboardingsubtitle1'.tr,
-        imagePath: AssetsImageModel.notebook),
+      title: 'onboardingtitle1'.tr,
+      desc: 'onboardingsubtitle1'.tr,
+      imagePath: AssetsImageModel.notebook,
+    ),
     IntroComponent(
-        title: 'onboardingtitle2'.tr,
-        desc: 'onboardingsubtitle2'.tr,
-        imagePath: AssetsImageModel.notebook),
+      title: 'onboardingtitle2'.tr,
+      desc: 'onboardingsubtitle2'.tr,
+      imagePath: AssetsImageModel.notebook,
+    ),
     IntroComponent(
-        title: 'onboardingtitle3'.tr,
-        desc: "onboardingsubtitle3".tr,
-        imagePath: AssetsImageModel.notebook),
+      title: 'onboardingtitle3'.tr,
+      desc: "onboardingsubtitle3".tr,
+      imagePath: AssetsImageModel.notebook,
+    ),
   ];
   void skip() {
-    pageController.animateToPage(pages.length - 1,
-        duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+    pageController.animateToPage(
+      pages.length - 1,
+      duration: Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
   }
 
   void onChangedPage(int index) {
@@ -39,11 +45,26 @@ class OnBoardingController extends GetxController {
   void onNext() {
     if (currentIndex < pages.length - 1) {
       pageController.nextPage(
-          duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
       update();
     } else {
       onFinish();
     }
+  }
+
+  void onBack() {
+    if (currentIndex == 0) {
+    } else {
+      currentIndex--;
+      pageController.animateToPage(
+        currentIndex,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
+    update();
   }
 
   void onFinish() async {

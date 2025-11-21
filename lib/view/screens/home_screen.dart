@@ -1,9 +1,9 @@
-// ignore_for_file: must_be_immutable, duplicate_ignore
 import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:note_book/controller/note_controller.dart';
+import 'package:note_book/main.dart';
 import 'package:note_book/model/data_static/assets_model.dart';
 import 'package:note_book/view/screens/about_us.dart';
 import 'package:note_book/model/notes.dart';
@@ -102,22 +102,48 @@ class HomeScreen extends StatelessWidget {
                           scrollDirection: Axis.horizontal,
                           itemCount: snapshot.data.length,
                           itemBuilder: (context, i) {
-                            return Stack(
-                              children: [
-                                GestureDetector(
-                                  child: Card(
-                                    color:
-                                        snapshot.data[i]['noteImageUrl'] ==
-                                            "empty"
-                                        ? Color(snapshot.data[i]['noteColor'])
-                                        : null,
-                                    child:
-                                        snapshot.data[i]['noteImageUrl'] ==
-                                            "empty"
-                                        ? Opacity(
-                                            opacity: 0.0,
-                                            child: Image.asset(
-                                              AssetsImageModel.notebook,
+                            return Directionality(
+                              textDirection:
+                                  detectLanguage(
+                                        snapshot.data[i]['noteTitle'],
+                                      ) ==
+                                      TextDirection.rtl
+                                  ? TextDirection.rtl
+                                  : TextDirection.ltr,
+                              child: Stack(
+                                children: [
+                                  GestureDetector(
+                                    child: Card(
+                                      color:
+                                          snapshot.data[i]['noteImageUrl'] ==
+                                              "empty"
+                                          ? Color(snapshot.data[i]['noteColor'])
+                                          : null,
+                                      child:
+                                          snapshot.data[i]['noteImageUrl'] ==
+                                              "empty"
+                                          ? Opacity(
+                                              opacity: 0.0,
+                                              child: Image.asset(
+                                                AssetsImageModel.notebook,
+                                                height:
+                                                    MediaQuery.of(
+                                                      context,
+                                                    ).size.height /
+                                                    3.21,
+                                                width:
+                                                    MediaQuery.of(
+                                                      context,
+                                                    ).size.width /
+                                                    1,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            )
+                                          : Image.file(
+                                              File(
+                                                snapshot
+                                                    .data[i]['noteImageUrl'],
+                                              ),
                                               height:
                                                   MediaQuery.of(
                                                     context,
@@ -130,100 +156,89 @@ class HomeScreen extends StatelessWidget {
                                                   1,
                                               fit: BoxFit.cover,
                                             ),
-                                          )
-                                        : Image.file(
-                                            File(
-                                              snapshot.data[i]['noteImageUrl'],
-                                            ),
-                                            height:
-                                                MediaQuery.of(
-                                                  context,
-                                                ).size.height /
-                                                3.21,
-                                            width:
-                                                MediaQuery.of(
-                                                  context,
-                                                ).size.width /
-                                                1,
-                                            fit: BoxFit.cover,
-                                          ),
+                                    ),
+                                    onTap: () {
+                                      Get.toNamed(
+                                        '/readnote',
+                                        arguments: Note.fromJson(
+                                          snapshot.data[i],
+                                        ),
+                                      );
+                                    },
                                   ),
-                                  onTap: () {
-                                    Get.toNamed(
-                                      '/readnote',
-                                      arguments: Note.fromJson(
-                                        snapshot.data[i],
-                                      ),
-                                    );
-                                  },
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      height: 33,
-                                      margin: const EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: const Color(0xffd5b001),
-                                      ),
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Text(
-                                        snapshot.data[i]['noteTitle'],
-                                        style: const TextStyle(fontSize: 22),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Align(
-                                      alignment: Alignment.center,
-                                      child: IconButton(
-                                        onPressed: () async {
-                                          await noteController.pageController
-                                              .previousPage(
-                                                duration: const Duration(
-                                                  seconds: 1,
-                                                ),
-                                                curve: Curves.easeInOutSine,
-                                              );
-                                        },
-                                        icon: Icon(
-                                          Icons.arrow_back_ios_new_rounded,
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.surface,
-                                          size: 38,
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                        height: 33,
+                                        margin: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            5,
+                                          ),
+                                          color: const Color(0xffd5b001),
+                                        ),
+                                        width: MediaQuery.of(
+                                          context,
+                                        ).size.width,
+                                        child: Text(
+                                          snapshot.data[i]['noteTitle'],
+
+                                          style: const TextStyle(fontSize: 22),
                                         ),
                                       ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.center,
-                                      child: IconButton(
-                                        onPressed: () async {
-                                          await noteController.pageController
-                                              .nextPage(
-                                                duration: const Duration(
-                                                  seconds: 1,
-                                                ),
-                                                curve: Curves.easeInOutSine,
-                                              );
-                                        },
-                                        icon: Icon(
-                                          Icons.arrow_forward_ios_rounded,
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.surface,
-                                          size: 38,
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: IconButton(
+                                          onPressed: () async {
+                                            await noteController.pageController
+                                                .previousPage(
+                                                  duration: const Duration(
+                                                    seconds: 1,
+                                                  ),
+                                                  curve: Curves.easeInOutSine,
+                                                );
+                                          },
+                                          icon: Icon(
+                                            Icons.arrow_back_ios_new_rounded,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.surface,
+                                            size: 38,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: IconButton(
+                                          onPressed: () async {
+                                            await noteController.pageController
+                                                .nextPage(
+                                                  duration: const Duration(
+                                                    seconds: 1,
+                                                  ),
+                                                  curve: Curves.easeInOutSine,
+                                                );
+                                          },
+                                          icon: Icon(
+                                            Icons.arrow_forward_ios_rounded,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.surface,
+                                            size: 38,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             );
                           },
                         ),

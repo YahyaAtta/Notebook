@@ -102,13 +102,13 @@ class ReadController extends GetxController {
         if (Platform.isWindows) {
           UtilsController().showSnackBarGet("message".tr, "recordsave".tr);
         } else {
-          UtilsController().showToastFromNative("recordsave".tr, 1);
+          Toast.makeText(text:"recordsave".tr , duration:1) ; 
         }
       } else {
         if (Platform.isWindows) {
           UtilsController().showSnackBarGet("message".tr, "nofile".tr);
         } else {
-          UtilsController().showToastFromNative("nofile".tr, 1);
+          Toast.makeText(text:"nofile".tr , duration:1) ; 
         }
       }
     }
@@ -120,14 +120,14 @@ class ReadController extends GetxController {
       if (Platform.isWindows) {
         UtilsController().showSnackBarGet("message".tr, "pdfsavear".tr);
       } else {
-        UtilsController().showToastFromNative("pdfsavear".tr, 1);
+        Toast.makeText(text:"pdfsavear".tr , duration:1)  ;
       }
     } else {
       await savePDF(note!.noteTitle, note!.noteContent);
       if (Platform.isWindows) {
         UtilsController().showSnackBarGet("message".tr, "pdfsave".tr);
       } else {
-        UtilsController().showToastFromNative("pdfsave".tr, 1);
+        Toast.makeText(text:"pdfsave".tr , duration:1) ; 
       }
     }
   }
@@ -228,7 +228,7 @@ class ReadController extends GetxController {
       }
     } catch (e) {
       if (Platform.isAndroid) {
-        UtilsController().showToastFromNative("PDF Generation Error: $e", 1);
+        Toast.makeText(text:"PDF Generation Error: $e" ,duration:1) ; 
       }
     }
   }

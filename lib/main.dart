@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:note_book/controller/bindings/note_book_bindings.dart';
+import 'package:note_book/controller/utils_controller.dart';
 import 'package:note_book/localizations/locale_controller.dart';
 import 'package:note_book/localizations/notebook_locale.dart';
 import 'package:note_book/middleware/first_time_middleware.dart';
@@ -86,5 +87,23 @@ class MyApp extends GetView<NotebookServices> {
       ),
       themeMode: ThemeMode.system,
     );
+  }
+}
+
+TextDirection detectLanguage(String content) {
+  bool isArabic = content.isArabicGetx();
+  if (isArabic) {
+    return TextDirection.rtl;
+  } else {
+    return TextDirection.ltr;
+  }
+}
+
+TextAlign detectLang(String content) {
+  bool isArabic = content.isArabicGetx();
+  if (isArabic) {
+    return TextAlign.right;
+  } else {
+    return TextAlign.left;
   }
 }

@@ -21,6 +21,7 @@ class NoteController extends GetxController {
   String value3 = "Orange";
   String value4 = "Yellow";
   String value5 = "Violent";
+
   void setFontStyle(FontStyle f) {
     fontStyle = f;
     if (fontStyle == FontStyle.normal) {
@@ -131,22 +132,24 @@ class NoteController extends GetxController {
 
   int? noteColor = Colors.green[600]!.toARGB32();
   ImagePicker imagePicker = ImagePicker();
-  Future<void> addNote(
-      {String? noteTitle,
-      String? noteContent,
-      String? contentType,
-      int? contentIndex,
-      String? noteImageurl,
-      int? noteColor,
-      double? contentSize,
-      String? noteDate,
-      String? noteTime,
-      String? fontStyle,
-      String? fontWeight,
-      String? noteRecord}) async {
+  Future<void> addNote({
+    String? noteTitle,
+    String? noteContent,
+    String? contentType,
+    int? contentIndex,
+    String? noteImageurl,
+    int? noteColor,
+    double? contentSize,
+    String? noteDate,
+    String? noteTime,
+    String? fontStyle,
+    String? fontWeight,
+    String? noteRecord,
+  }) async {
     try {
       int r = await sqldb.insertData(
-          '''INSERT INTO `notes`(`noteTitle`,`noteContent`,`contentType`,`contentIndex`,`noteImageUrl`,`noteColor`,`contentSize`,`noteDate`,`noteTime`,`fontStyle`,`fontWeight`,`noteRecord`) VALUES("$noteTitle","$noteContent","$contentType",$contentIndex,"$noteImageurl",${noteColor ?? 4292332503},$contentSize,"$noteDate","$noteTime","$fontStyle","$fontWeight","${noteRecord ?? "empty"}")''');
+        '''INSERT INTO `notes`(`noteTitle`,`noteContent`,`contentType`,`contentIndex`,`noteImageUrl`,`noteColor`,`contentSize`,`noteDate`,`noteTime`,`fontStyle`,`fontWeight`,`noteRecord`) VALUES("$noteTitle","$noteContent","$contentType",$contentIndex,"$noteImageurl",${noteColor ?? 4292332503},$contentSize,"$noteDate","$noteTime","$fontStyle","$fontWeight","${noteRecord ?? "empty"}")''',
+      );
       if (r > 0) {
         await sqldb.readData('''
 SELECT * FROM notes ORDER BY date DESC''');
@@ -161,7 +164,7 @@ SELECT * FROM notes ORDER BY date DESC''');
         fontWeightString = "normal";
         Get.back();
         update();
-        UtilsController().showToastFromNative("noteAdd".tr, 1);
+        Toast.makeText(text:"noteAdd".tr , duration:1) ; 
       }
     } on DatabaseException catch (e) {
       Get.defaultDialog(
@@ -169,10 +172,11 @@ SELECT * FROM notes ORDER BY date DESC''');
         content: Text("$e", style: const TextStyle(fontSize: 17)),
         actions: [
           TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: const Text("OK")),
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text("OK"),
+          ),
         ],
       );
     }
@@ -194,17 +198,18 @@ SELECT * FROM notes ORDER BY date DESC''');
     return _notesDb;
   }
 
-  Future<void> updateNote(
-      {String? noteTitle,
-      String? noteContent,
-      String? contentType,
-      int? contentIndex,
-      String? noteImageurl,
-      int? noteColor,
-      int? noteId,
-      double? contentSize,
-      String? fontStyle,
-      String? fontWeight}) async {
+  Future<void> updateNote({
+    String? noteTitle,
+    String? noteContent,
+    String? contentType,
+    int? contentIndex,
+    String? noteImageurl,
+    int? noteColor,
+    int? noteId,
+    double? contentSize,
+    String? fontStyle,
+    String? fontWeight,
+  }) async {
     try {
       noteImageurl ??= noteImageurl!;
       int r = await sqldb.updateData('''
@@ -214,7 +219,7 @@ UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentT
         await sqldb.readData("SELECT * FROM notes ORDER BY date DESC");
         Get.back();
         update();
-        UtilsController().showToastFromNative("noteUpdate".tr, 1);
+        Toast.makeText(text:"noteUpdate".tr , duration:1) ; 
       }
     } on DatabaseException catch (e) {
       Get.defaultDialog(
@@ -222,17 +227,21 @@ UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentT
         content: Text("$e", style: const TextStyle(fontSize: 17)),
         actions: [
           TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: const Text("OK")),
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text("OK"),
+          ),
         ],
       );
     }
   }
 
-  Future<void> deleteNote(
-      {int? noteId, String? noteImageurl, String? noteRecord}) async {
+  Future<void> deleteNote({
+    int? noteId,
+    String? noteImageurl,
+    String? noteRecord,
+  }) async {
     try {
       if (noteRecord != "empty") {
         await File(noteRecord!).delete();
@@ -240,12 +249,14 @@ UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentT
       if (noteImageurl != "empty") {
         await File(noteImageurl!).delete();
       }
-      int r =
-          await sqldb.deleteData("DELETE FROM `notes` WHERE noteId =$noteId");
+      int r = await sqldb.deleteData(
+        "DELETE FROM `notes` WHERE noteId =$noteId",
+      );
       if (r > 0) {
-        UtilsController().showToastFromNative("noteDelete".tr, 1);
-        _notesDb =
-            await sqldb.readData("SELECT * FROM notes ORDER BY date DESC");
+        Toast.makeText(text:"noteDelete".tr , duration:1) ; 
+        _notesDb = await sqldb.readData(
+          "SELECT * FROM notes ORDER BY date DESC",
+        );
       }
       update();
     } on DatabaseException catch (e) {
@@ -254,10 +265,11 @@ UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentT
         content: Text(e.toString(), style: const TextStyle(fontSize: 17)),
         actions: [
           TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: const Text("OK")),
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text("OK"),
+          ),
         ],
       );
     } on FileSystemException catch (e) {
@@ -266,10 +278,11 @@ UPDATE `notes` SET noteTitle ="$noteTitle",noteContent = "$noteContent",contentT
         content: Text(e.message, style: const TextStyle(fontSize: 17)),
         actions: [
           TextButton(
-              onPressed: () {
-                Get.back();
-              },
-              child: const Text("OK")),
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text("OK"),
+          ),
         ],
       );
     }

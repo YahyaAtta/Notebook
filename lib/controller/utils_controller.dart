@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:ui';
 import 'package:external_path/external_path.dart';
 import 'package:get/get.dart';
 import 'package:jni/jni.dart';
@@ -10,13 +11,77 @@ import 'package:record/record.dart';
 
 final record = AudioRecorder();
 
+android.Context getAndroidContext() {
+  JObject c = Jni.androidApplicationContext;
+  android.Context context = c.as<android.Context>(android.Context.type);
+  return context;
+}
+
+android.Activity getAndroidActivity() {
+  final a = Jni.androidActivity(PlatformDispatcher.instance.engineId!);
+  final android.Activity activity = a!.as<android.Activity>(
+    android.Activity.type,
+  );
+  return activity;
+}
+
+class AndroidDialog {
+     
+  static void showDialog({required String title, required String message}) {
+    final activity = getAndroidActivity();
+    final context = getAndroidContext();
+    activity.runOnUiThread(
+      android.Runnable.implement(
+        android.$Runnable(
+          run: () {
+            android.AlertDialog$Builder builder =
+                android.AlertDialog$Builder.new$1(context ,1);
+            builder.setTitle$1(JString.fromString(title));
+            builder.setMessage$1(JString.fromString(message));
+            builder.setPositiveButton$1(
+              JString.fromString("OK"),
+              android.DialogInterface$OnClickListener.implement(
+                android.$DialogInterface$OnClickListener(
+                  onClick: (dialog, which) {
+                    dialog!.dismiss();
+                  },
+                ),
+              ),
+            );
+            builder.show();
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class Toast {
+  static void makeText({required String text, required int duration}) {
+    if (Platform.isAndroid) {
+      final activity = getAndroidActivity();
+      final context = getAndroidContext();
+      activity.runOnUiThread(
+        android.Runnable.implement(
+          android.$Runnable(
+            run: () {
+              android.Toast.makeText$1(
+                context,
+                JString.fromString(text),
+                duration,
+              );
+            },
+          ),
+        ),
+      );
+    }
+  }
+}
+
 class UtilsController {
   Future<void> openUrlInBrowserAndroid(String url) async {
     if (Platform.isAndroid) {
-      JReference contextRef = Jni.getCachedApplicationContext();
-      final android.Context context = android.Context.fromReference(
-        contextRef,
-      ); // Create Context
+      final context = getAndroidContext();
       final android.Intent intent = android.Intent.new$3(
         android.Intent.ACTION_VIEW,
       ); // Create Intent
@@ -32,7 +97,8 @@ class UtilsController {
           intent,
         ); // Launching Uri into Browser Using intent
       } on JniException catch (e) {
-        showToastFromNative(e.message.toString(), 1);
+        // showToastFromNative(e.message.toString(), 1);
+        Toast.makeText(text: e.message, duration: 1);
       } finally {
         context.release(); // release context  from Memory
         urlBrowser!.release(); // release urlBrowser from Memory
@@ -41,34 +107,21 @@ class UtilsController {
     }
   }
 
-  void showToastAndroid(
-    android.Activity activity,
-    JString nativeMessage,
-    int duration,
-  ) {
-    final android.Context context = android.Context.fromReference(
-      Jni.getCachedApplicationContext(),
-    );
-    activity.runOnUiThread(
-      android.Runnable.implement(
-        android.$Runnable(
-          run: () {
-            android.Toast.makeText$1(context, nativeMessage, duration)!.show();
-          },
-        ),
-      ),
-    );
-  }
+  // void showToastAndroid(
+  //   android.Context context,
+  //   JString nativeMessage,
+  //   int duration,
+  // ) {
 
-  void showToastFromNative(String message, int duration) async {
-    if (Platform.isAndroid) {
-      final android.Activity activity = android.Activity.fromReference(
-        Jni.getCurrentActivity(),
-      );
-      JString nativeMessage = message.toJString();
-      showToastAndroid(activity, nativeMessage, duration);
-    }
-  }
+  // }
+
+  // void showToastFromNative(String message, int duration) async {
+  //   if (Platform.isAndroid) {
+  //     final context = getAndroidContext();
+  //     JString nativeMessage = message.toJString();
+  //     showToastAndroid(context, nativeMessage, duration);
+  //   }
+  // }
 
   void showSnackBarGet(String title, String message) {
     Get.snackbar(title, message, snackPosition: SnackPosition.BOTTOM);
@@ -140,7 +193,7 @@ class UtilsController {
       }
     } catch (e) {
       if (Platform.isAndroid) {
-        showToastFromNative("Error:$e", 1);
+        Toast.makeText(text: "Error: $e", duration: 1);
       } else {
         showSnackBarGet("Message", "Error:$e");
       }
@@ -180,6 +233,14 @@ extension ArabicExtension on String {
   bool isArabicGetx() {
     String arabicPattern = r'[\u0600-\u06FF]';
     RegExp regExp = RegExp(arabicPattern);
+    return regExp.hasMatch(this);
+  }
+}
+
+extension EnglishExtension on String {
+  bool isEnglishGetx() {
+    String englishPattern = r'^[a-zA-Z]+';
+    RegExp regExp = RegExp(englishPattern);
     return regExp.hasMatch(this);
   }
 }

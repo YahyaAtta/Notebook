@@ -8,15 +8,19 @@ class DeviceInfoController extends GetxController {
   String operatingSystemVersion = Platform.operatingSystemVersion;
   int numberOfProcessor = Platform.numberOfProcessors;
   Map<String, dynamic>? hardware;
+  int totalMemory = 0;
   Map<String, dynamic> getNativeDeviceInfo() {
     Map<String, dynamic> deviceInfo = <String, dynamic>{};
-    deviceInfo['Manufacturer'] = android.Build.MANUFACTURER!.toDartString();
-    deviceInfo['Model'] = android.Build.MODEL!.toDartString();
-    deviceInfo['Board'] = android.Build.BOARD!.toDartString();
-    deviceInfo['Version'] = android.Build$VERSION.RELEASE!.toDartString();
-    deviceInfo['Codename'] = android.Build$VERSION.CODENAME!.toDartString();
-    deviceInfo['Sdkint'] = android.Build$VERSION.SDK_INT;
-    return deviceInfo;
+    if (Platform.isAndroid) {
+      deviceInfo['Manufacturer'] = android.Build.MANUFACTURER!.toDartString();
+      deviceInfo['Model'] = android.Build.MODEL!.toDartString();
+      deviceInfo['Board'] = android.Build.BOARD!.toDartString();
+      deviceInfo['Version'] = android.Build$VERSION.RELEASE!.toDartString();
+      deviceInfo['Codename'] = android.Build$VERSION.CODENAME!.toDartString();
+      deviceInfo['Sdkint'] = android.Build$VERSION.SDK_INT;
+      return deviceInfo;
+    }
+    return {};
   }
 
   @override

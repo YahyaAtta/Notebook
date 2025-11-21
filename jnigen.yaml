@@ -1,5 +1,6 @@
 android_sdk_config:
   add_gradle_deps: true
+  sdk_path: C:\Users\Yahya\AppData\Local\Android\Sdk
 
 output:
   dart:
@@ -14,3 +15,5 @@ classes:
   - "android.os.Build"
   - "android.widget.Toast"
   - "java.lang.Runnable"
+  - "android.content.DialogInterface"
+  - "android.app.AlertDialog"

@@ -15,14 +15,12 @@ class About extends StatelessWidget {
         centerTitle: true,
         actions: [
           IconButton(
-              tooltip: 'Device Info',
-              onPressed: () {
-                Get.toNamed("/device");
-              },
-              icon: Icon(
-                Icons.info_rounded,
-                size: 30,
-              )),
+            tooltip: 'Device Info',
+            onPressed: () {
+              Get.toNamed("/device");
+            },
+            icon: Icon(Icons.info_rounded, size: 30),
+          ),
         ],
       ),
       body: ListView(
@@ -30,71 +28,82 @@ class About extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(top: 40, left: 4, right: 4, bottom: 4),
             child: Center(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.asset(
-                        AssetsImageModel.oiulogo,
-                        height: 70,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          AssetsImageModel.oiulogo,
+                          height: 70,
+                        ),
                       ),
-                    ),
-                    Column(
-                      children: [
-                        Text("${"oiu".tr}\n".tr,
+                      Column(
+                        children: [
+                          Text(
+                            "${"oiu".tr}\n".tr,
                             style: TextStyle(
-                                fontSize: 14.75, fontWeight: FontWeight.w600)),
-                        Text("fcsit".tr,
+                              fontSize: 14.75,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            "fcsit".tr,
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 14.75, fontWeight: FontWeight.w600)),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.asset(
-                        AssetsImageModel.oiufcsit,
-                        height: 70,
+                              fontSize: 14.75,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                ClipRRect(
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          AssetsImageModel.oiufcsit,
+                          height: 70,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  ClipRRect(
                     borderRadius: BorderRadius.circular(300),
                     child: Image.asset(
                       AssetsImageModel.notebook,
                       height: 200,
                       width: 200,
-                    )),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text('ver'.tr, style: TextStyle(fontSize: 20)),
-                Text(
-                  "${"dev".tr}\n${"year".tr}\n${"dep".tr}\n${"git".tr}",
-                  style: TextStyle(fontSize: 20),
-                  textAlign: TextAlign.center,
-                ),
-                Platform.isAndroid
-                    ? TextButton(
-                        onPressed: () {
-                          UtilsController().openUrlInBrowserAndroid(
-                              "https://www.github.com/YahyaAtta");
-                        },
-                        child: Text("My Github",
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text('ver'.tr, style: TextStyle(fontSize: 20)),
+                  Text(
+                    "${"dev".tr}\n${"year".tr}\n${"dep".tr}\n${"git".tr}",
+                    style: TextStyle(fontSize: 20),
+                    textAlign: TextAlign.center,
+                  ),
+                  Platform.isAndroid
+                      ? TextButton(
+                          onPressed: () {
+                            UtilsController().openUrlInBrowserAndroid(
+                              "https://www.github.com/YahyaAtta",
+                            );
+                          },
+                          child: Text(
+                            "My Github",
                             style: TextStyle(
-                                decoration: TextDecoration.underline)))
-                    : Text(""),
-              ],
-            )),
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        )
+                      : Text(""),
+                ],
+              ),
+            ),
           ),
         ],
       ),
