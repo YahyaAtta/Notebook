@@ -4,7 +4,7 @@
 
 ### inital Version :
 This is First Version of Notebook App
-Built By Flutter Framework , State Managment(Provider) , SQFLite , Audio Player
+Built By Flutter Framework , State Managment(Getx) , SQFLite , Audio Player
 Works in (Android , Windows) 
 ## Project Stucture : 
 onboarding Screen
