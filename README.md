@@ -5,7 +5,7 @@
 ### inital Version :
 This is First Version of Notebook App
 Built By Flutter Framework , State Managment(Getx) , SQFLite , Audio Player
-Works in (Android , Windows) 
+Works in (Android , Windows , Linux) 
 ## Project Stucture : 
 onboarding Screen
 Home Screen
@@ -18,6 +18,5 @@ Update Note Screen
 Update Customize Screen
 Search Note Screen 
 Show Time & Date Screen
-### How to Use it:
-Long Tap to Update Note
+### Some Tips:
 In Home Screen tap on Notebook Logo to Show About Screen
